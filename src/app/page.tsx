@@ -96,7 +96,8 @@ export default function Page() {
     <>
       {/* Mobile gate — the compositor needs a desktop-width canvas + rail. */}
       <div className="flex h-screen w-screen flex-col items-center justify-center gap-4 bg-ink px-8 text-center text-white md:hidden">
-        <div className="font-display text-2xl font-semibold tracking-tight">Nengine</div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/nengine-mark.svg" alt="Nengine" className="mb-1 h-14 w-auto" />
         <div className="font-display text-lg font-semibold text-white/90">
           Only available on desktop
         </div>
@@ -130,9 +131,7 @@ export default function Page() {
           )}
 
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-white/40">
-              loading source…
-            </div>
+            <div className="absolute inset-0 animate-pulse rounded-sm bg-white/[0.06]" />
           )}
           {error && (
             <div className="absolute inset-0 flex items-center justify-center px-4 text-center font-mono text-xs text-red-400/80">

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 /**
  * The control surface. Two cost profiles, made visually distinct:
  *   - SOURCE: the placeholder library + (stubbed) Generate. Generation is the only
@@ -70,9 +72,8 @@ export function Controls({
   return (
     <div className="scroll-clean flex h-full flex-col overflow-y-auto">
       <div className="flex items-center justify-between border-b border-hair px-4 py-4">
-        <div className="font-display text-lg font-semibold tracking-tight text-white">
-          Nengine
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/nengine-mark.svg" alt="Nengine" className="h-7 w-auto" />
         <button
           type="button"
           onClick={onDownload}
@@ -101,31 +102,14 @@ export function Controls({
         {/* Fixed height (~2 rows), scroll for the rest. items-start + content-start
             stop the grid from stretching items, so aspect-ratio can't collapse (Safari). */}
         <div className="scroll-clean grid max-h-[208px] auto-rows-max grid-cols-3 content-start items-start gap-2 overflow-y-auto">
-          {PLACEHOLDERS.map((p) => {
-            const active = p.id === placeholder.id;
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => onSelectPlaceholder(p)}
-                title={p.label}
-                className={`group relative block overflow-hidden rounded-md border transition-colors ${
-                  active ? "border-white/80" : "border-hair hover:border-white/40"
-                }`}
-              >
-                {/* Square aspect lives on the image, not the grid item. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={p.src}
-                  alt={p.label}
-                  className="block aspect-square w-full object-cover"
-                />
-                <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 pb-1 pt-3 text-left text-[9px] text-white/70">
-                  {p.label}
-                </span>
-              </button>
-            );
-          })}
+          {PLACEHOLDERS.map((p) => (
+            <Thumb
+              key={p.id}
+              placeholder={p}
+              active={p.id === placeholder.id}
+              onClick={() => onSelectPlaceholder(p)}
+            />
+          ))}
         </div>
 
         <button
@@ -258,6 +242,51 @@ export function Controls({
         </Feature>
       </Feature>
     </div>
+  );
+}
+
+/** Source thumbnail with a pulsing skeleton until its image finishes loading. */
+function Thumb({
+  placeholder,
+  active,
+  onClick,
+}: {
+  placeholder: Placeholder;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const ref = useRef<HTMLImageElement>(null);
+  // Cached images can finish before onLoad attaches — catch that case.
+  useEffect(() => {
+    if (ref.current?.complete) setLoaded(true);
+  }, []);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={placeholder.label}
+      className={`group relative block overflow-hidden rounded-md border transition-colors ${
+        active ? "border-white/80" : "border-hair hover:border-white/40"
+      }`}
+    >
+      {!loaded && <div className="absolute inset-0 animate-pulse bg-white/[0.07]" />}
+      {/* Square aspect lives on the image, not the grid item. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={ref}
+        src={placeholder.src}
+        alt={placeholder.label}
+        onLoad={() => setLoaded(true)}
+        className={`block aspect-square w-full object-cover transition-opacity duration-300 ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
+      />
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 pb-1 pt-3 text-left text-[9px] text-white/70">
+        {placeholder.label}
+      </span>
+    </button>
   );
 }
 
