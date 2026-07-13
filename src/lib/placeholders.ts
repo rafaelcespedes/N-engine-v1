@@ -31,7 +31,6 @@ export const PLACEHOLDERS: Placeholder[] = [
   ph("solarpunk", "Solarpunk"),
   ph("organic", "Organic"),
   ph("analytics", "Analytics"),
-  ph("bauhaus", "Bauhaus"),
   ph("cyberpunk", "Cyberpunk"),
   ph("data", "Data"),
   ph("eye", "Eye"),
