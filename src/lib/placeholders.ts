@@ -27,7 +27,6 @@ function ph(id: string, label: string): Placeholder {
 }
 
 export const PLACEHOLDERS: Placeholder[] = [
-  ph("abstract", "Abstract"),
   ph("charting", "Charting"),
   ph("solarpunk", "Solarpunk"),
   ph("organic", "Organic"),
@@ -38,8 +37,6 @@ export const PLACEHOLDERS: Placeholder[] = [
   ph("eye", "Eye"),
   ph("graphs", "Graphs"),
   ph("magnify", "Magnify"),
-  ph("computer", "Computer"),
-  ph("lightbeam", "Light beam"),
 ];
 
 /** The one loaded on first paint. */
