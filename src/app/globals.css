@@ -6,10 +6,12 @@
   color-scheme: dark;
 }
 
-/* Modern, backgroundless scrollbar — thin thumb, no track. */
+/* Modern, backgroundless scrollbar — thin thumb, no track. `scrollbar-gutter: stable`
+   reserves the gutter so content never shifts when the scrollbar appears/disappears. */
 .scroll-clean {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-gutter: stable;
 }
 .scroll-clean::-webkit-scrollbar {
   width: 6px;
