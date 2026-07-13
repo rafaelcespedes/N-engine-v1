@@ -276,7 +276,7 @@ function Thumb({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={ref}
-        src={placeholder.src}
+        src={placeholder.thumb}
         alt={placeholder.label}
         onLoad={() => setLoaded(true)}
         className={`block aspect-square w-full object-cover transition-opacity duration-300 ${

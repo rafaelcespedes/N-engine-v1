@@ -43,18 +43,20 @@ export const ASPECT_DIMENSIONS: Record<AspectRatio, { w: number; h: number }> = 
 };
 
 /**
- * Canvas dimensions for the interactive preview, derived from the aspect ratio and
- * capped at `max` on the long edge. The compositor sizes its canvas to this and the
- * page sizes the on-screen frame to the same ratio, so overlays and the DOM plate-copy
- * layer stay in lockstep.
+ * Canvas dimensions for the render, derived from the aspect ratio with its long edge set
+ * to `long` px. The compositor sizes its canvas to this and the page sizes the on-screen
+ * frame to the same ratio, so overlays and the DOM plate-copy layer stay in lockstep. A
+ * bigger `long` = sharper render + export (no per-pixel cost now that stippling is off).
  */
 export function previewDims(
   aspect: AspectRatio,
-  max = 1000
+  long = 2000
 ): { w: number; h: number } {
   const { w, h } = ASPECT_DIMENSIONS[aspect];
-  const s = Math.min(1, max / Math.max(w, h));
-  return { w: Math.round(w * s), h: Math.round(h * s) };
+  const ar = w / h;
+  return ar >= 1
+    ? { w: long, h: Math.round(long / ar) }
+    : { w: Math.round(long * ar), h: long };
 }
 
 export interface Cell {

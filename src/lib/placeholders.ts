@@ -11,24 +11,35 @@
 export interface Placeholder {
   id: string;
   label: string;
-  /** Path under /public. */
+  /** Full-res image (2000px max) — used for the render + export. Path under /public. */
   src: string;
+  /** Small image (400px) — used for the picker thumbnail so the grid loads fast. */
+  thumb: string;
+}
+
+function ph(id: string, label: string): Placeholder {
+  return {
+    id,
+    label,
+    src: `/placeholders/${id}.jpg`,
+    thumb: `/placeholders/thumbs/${id}.jpg`,
+  };
 }
 
 export const PLACEHOLDERS: Placeholder[] = [
-  { id: "abstract", label: "Abstract", src: "/placeholders/abstract.jpg" },
-  { id: "charting", label: "Charting", src: "/placeholders/charting.jpg" },
-  { id: "solarpunk", label: "Solarpunk", src: "/placeholders/solarpunk.jpg" },
-  { id: "organic", label: "Organic", src: "/placeholders/organic.jpg" },
-  { id: "analytics", label: "Analytics", src: "/placeholders/analytics.jpg" },
-  { id: "bauhaus", label: "Bauhaus", src: "/placeholders/bauhaus.jpg" },
-  { id: "cyberpunk", label: "Cyberpunk", src: "/placeholders/cyberpunk.jpg" },
-  { id: "data", label: "Data", src: "/placeholders/data.jpg" },
-  { id: "eye", label: "Eye", src: "/placeholders/eye.jpg" },
-  { id: "graphs", label: "Graphs", src: "/placeholders/graphs.jpg" },
-  { id: "magnify", label: "Magnify", src: "/placeholders/magnify.jpg" },
-  { id: "computer", label: "Computer", src: "/placeholders/computer.jpg" },
-  { id: "lightbeam", label: "Light beam", src: "/placeholders/lightbeam.jpg" },
+  ph("abstract", "Abstract"),
+  ph("charting", "Charting"),
+  ph("solarpunk", "Solarpunk"),
+  ph("organic", "Organic"),
+  ph("analytics", "Analytics"),
+  ph("bauhaus", "Bauhaus"),
+  ph("cyberpunk", "Cyberpunk"),
+  ph("data", "Data"),
+  ph("eye", "Eye"),
+  ph("graphs", "Graphs"),
+  ph("magnify", "Magnify"),
+  ph("computer", "Computer"),
+  ph("lightbeam", "Light beam"),
 ];
 
 /** The one loaded on first paint. */
