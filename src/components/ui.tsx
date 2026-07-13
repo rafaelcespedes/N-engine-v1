@@ -33,7 +33,11 @@ export function Feature({
 }) {
   return (
     <div className={nested ? "" : "border-b border-hair px-4 py-4"}>
-      <div className="flex items-center justify-between">
+      {/* Clicking anywhere in the row opens a collapsed section. Only the − collapses it. */}
+      <div
+        className={`flex items-center justify-between ${active ? "" : "cursor-pointer"}`}
+        onClick={active ? undefined : () => onToggle(true)}
+      >
         <span
           className={`text-sm font-semibold ${
             active ? "text-white/90" : "text-white/55"
@@ -43,7 +47,10 @@ export function Feature({
         </span>
         <button
           type="button"
-          onClick={() => onToggle(!active)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle(!active);
+          }}
           aria-label={`${active ? "Remove" : "Add"} ${title}`}
           className="flex h-5 w-5 items-center justify-center rounded border border-hair text-sm leading-none text-white/55 transition-colors hover:border-white/40 hover:text-white"
         >
