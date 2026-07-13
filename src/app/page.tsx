@@ -113,9 +113,9 @@ export default function Page() {
         className="relative flex flex-1 items-center justify-center overflow-hidden"
         style={{
           padding: PAD,
-          backgroundColor: "#242424",
+          backgroundColor: "#1e1e1e",
           backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.09) 1.1px, transparent 1.1px)",
+            "radial-gradient(rgba(255,255,255,0.07) 1.1px, transparent 1.1px)",
           backgroundSize: "18px 18px",
           backgroundPosition: "center",
         }}
@@ -196,7 +196,7 @@ function PlateCopy({
     >
       {title && (
         <div
-          className="font-display font-semibold leading-[1.02] text-white"
+          className="font-display font-semibold leading-[0.95] text-white"
           style={{ fontSize: "min(15cqw, 22cqh)" }}
         >
           {title}
@@ -204,7 +204,7 @@ function PlateCopy({
       )}
       {body && (
         <div
-          className="mt-[4%] font-sans leading-snug text-white/80"
+          className="mt-[4%] font-sans leading-[0.95] text-white/75"
           style={{ fontSize: "min(6cqw, 9cqh)" }}
         >
           {body}
