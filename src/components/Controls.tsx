@@ -77,32 +77,14 @@ export function Controls({
     update({ panelColors: c ? [color1, c] : [color1] });
 
   return (
-    <ScrollArea className="flex flex-col">
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-hair bg-panel px-4 py-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/nengine-mark.svg" alt="Nengine" className="h-[22px] w-auto" />
-        <button
-          type="button"
-          onClick={onDownload}
-          title="Download as JPG"
-          aria-label="Download image"
-          className="flex h-7 items-center gap-1.5 rounded-md border border-hair bg-white/5 px-2.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-        >
-          <svg
-            viewBox="0 0 16 16"
-            width="14"
-            height="14"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M8 2v8M4.75 6.75 8 10l3.25-3.25M3 13.25h10" />
-          </svg>
-          <span className="text-xs font-medium">Download</span>
-        </button>
-      </div>
+    <div className="flex h-full flex-col">
+      <div className="min-h-0 flex-1">
+        <ScrollArea className="flex flex-col">
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-hair bg-panel px-4 py-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/nengine-mark.svg" alt="Nengine" className="h-[22px] w-auto" />
+            <InfoButton />
+          </div>
 
       {/* BACKGROUND --------------------------------------------------------- */}
       <Section title="Background">
@@ -248,7 +230,82 @@ export function Controls({
           className="w-full resize-none rounded-md border border-hair bg-transparent px-2 py-1.5 text-xs text-white/80 placeholder:text-white/25 focus:outline-none"
         />
       </Feature>
-    </ScrollArea>
+        </ScrollArea>
+      </div>
+
+      {/* Sticky download footer. */}
+      <div className="border-t border-hair bg-panel p-3">
+        <button
+          type="button"
+          onClick={onDownload}
+          title="Download as JPG"
+          aria-label="Download image"
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-white/10 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/[0.16]"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            width="15"
+            height="15"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 2v8M4.75 6.75 8 10l3.25-3.25M3 13.25h10" />
+          </svg>
+          Download
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Info icon with an about tooltip. Tooltip is fixed-positioned so the panel's
+ *  overflow-hidden / rounded corners never clip it. */
+function InfoButton() {
+  const ref = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const show = () => {
+    const r = ref.current?.getBoundingClientRect();
+    if (r) setPos({ top: Math.round(r.bottom + 8), left: Math.round(r.right - 300) });
+    setOpen(true);
+  };
+  return (
+    <button
+      ref={ref}
+      type="button"
+      aria-label="About Nengine"
+      onMouseEnter={show}
+      onMouseLeave={() => setOpen(false)}
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-hair bg-white/5 text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+    >
+      <svg
+        viewBox="0 0 20 20"
+        width="15"
+        height="15"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
+        <circle cx="10" cy="10" r="8" />
+        <line x1="10" y1="9.5" x2="10" y2="14" />
+        <circle cx="10" cy="6.4" r="0.9" fill="currentColor" stroke="none" />
+      </svg>
+      {open && (
+        <div
+          style={{ position: "fixed", top: pos.top, left: pos.left, width: 300 }}
+          className="pointer-events-none z-50 rounded-lg border border-hair bg-panel p-3.5 text-left text-xs leading-relaxed text-white/70 shadow-xl"
+        >
+          Nengine is a tool created for Nucleus by Rafael Cespedes to facilitate and partly
+          automate the creation of social media assets. The tool takes the look and feel of
+          Nucleus and presents controls that allow guardrailed customization — background
+          image, color, text, and more.
+        </div>
+      )}
+    </button>
   );
 }
 

@@ -29,7 +29,6 @@ function ph(id: string, label: string): Placeholder {
 export const PLACEHOLDERS: Placeholder[] = [
   ph("charting", "Charting"),
   ph("solarpunk", "Solarpunk"),
-  ph("organic", "Organic"),
   ph("analytics", "Analytics"),
   ph("cyberpunk", "Cyberpunk"),
   ph("data", "Data"),
