@@ -23,7 +23,7 @@ import type {
 import { GRID_PRESETS, DEFAULT_GRID_FOR } from "@/lib/grid";
 import { PANEL_HEX } from "@/lib/palette";
 import { PLACEHOLDERS, type Placeholder } from "@/lib/placeholders";
-import { Section, Feature, Segmented, Slider } from "./ui";
+import { Section, Feature, Segmented, Slider, ScrollArea } from "./ui";
 
 const ASPECT_OPTS: { value: AspectRatio; label: string }[] = [
   { value: "1:1", label: "1:1" },
@@ -77,7 +77,7 @@ export function Controls({
     update({ panelColors: c ? [color1, c] : [color1] });
 
   return (
-    <div className="scroll-clean flex h-full flex-col overflow-y-auto">
+    <ScrollArea className="flex flex-col">
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-hair bg-panel px-4 py-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/nengine-mark.svg" alt="Nengine" className="h-[22px] w-auto" />
@@ -104,8 +104,8 @@ export function Controls({
         </button>
       </div>
 
-      {/* SOURCE ------------------------------------------------------------ */}
-      <Section title="Source">
+      {/* BACKGROUND --------------------------------------------------------- */}
+      <Section title="Background">
         {/* Fixed height (~2 rows), scroll for the rest. items-start + content-start
             stop the grid from stretching items, so aspect-ratio can't collapse (Safari). */}
         <div className="scroll-clean grid max-h-[208px] auto-rows-max grid-cols-3 content-start items-start gap-2 overflow-y-auto">
@@ -254,7 +254,7 @@ export function Controls({
           />
         </Feature>
       </Feature>
-    </div>
+    </ScrollArea>
   );
 }
 

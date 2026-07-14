@@ -223,7 +223,7 @@ export default function Page() {
       </section>
 
       {/* Control rail — floating card */}
-      <aside className="my-4 mr-4 w-[340px] shrink-0 overflow-hidden rounded-2xl bg-panel shadow-2xl ring-1 ring-white/5">
+      <aside className="my-4 mr-4 w-[340px] shrink-0 overflow-hidden rounded-2xl border border-hair bg-panel shadow-2xl">
         <Controls
           params={params}
           placeholder={placeholder}

@@ -2,7 +2,92 @@
 
 /** Small studio-chrome control primitives. Deliberately plain — the canvas is the star. */
 
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+
+/**
+ * Scroll container with a custom overlay scrollbar. The native scrollbar is hidden so it
+ * takes no layout width (content never shifts when it appears), and a thin thumb is drawn
+ * absolutely on top of the content. The thumb is draggable and tracks scroll position.
+ */
+export function ScrollArea({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const viewport = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ y: number; scroll: number } | null>(null);
+  const [thumb, setThumb] = useState({ h: 0, top: 0, show: false });
+
+  const measure = useCallback(() => {
+    const el = viewport.current;
+    if (!el) return;
+    const { clientHeight: ch, scrollHeight: sh, scrollTop: st } = el;
+    if (sh <= ch + 1) {
+      setThumb((t) => (t.show ? { ...t, show: false } : t));
+      return;
+    }
+    const h = Math.max(28, (ch / sh) * ch);
+    const top = ((st / (sh - ch)) * (ch - h)) || 0;
+    setThumb({ h, top, show: true });
+  }, []);
+
+  useEffect(() => {
+    const el = viewport.current;
+    if (!el) return;
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    const mo = new MutationObserver(measure);
+    mo.observe(el, { childList: true, subtree: true, attributes: true });
+    el.addEventListener("scroll", measure, { passive: true });
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+      el.removeEventListener("scroll", measure);
+    };
+  }, [measure]);
+
+  const onDown = (e: React.PointerEvent) => {
+    const el = viewport.current;
+    if (!el) return;
+    drag.current = { y: e.clientY, scroll: el.scrollTop };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+  const onMove = (e: React.PointerEvent) => {
+    const el = viewport.current;
+    const d = drag.current;
+    if (!el || !d) return;
+    const track = el.clientHeight - thumb.h;
+    if (track <= 0) return;
+    el.scrollTop = d.scroll + ((e.clientY - d.y) / track) * (el.scrollHeight - el.clientHeight);
+  };
+  const onUp = () => {
+    drag.current = null;
+  };
+
+  return (
+    <div className="relative h-full overflow-hidden">
+      <div
+        ref={viewport}
+        className={`h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
+      >
+        {children}
+      </div>
+      {thumb.show && (
+        <div
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerCancel={onUp}
+          className="absolute right-1 z-20 w-1.5 cursor-pointer rounded-full bg-white/20 transition-colors hover:bg-white/40"
+          style={{ height: thumb.h, top: thumb.top }}
+        />
+      )}
+    </div>
+  );
+}
 
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
