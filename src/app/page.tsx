@@ -132,21 +132,21 @@ export default function Page() {
   return (
     <>
       {/* Mobile gate — the compositor needs a desktop-width canvas + rail. */}
-      <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#131313] px-8 text-center text-white md:hidden">
+      <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#0A0A0A] px-8 text-center text-white md:hidden">
         {/* App-icon (white tile + shadow baked into the PNG). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/nengine-app-icon.png" alt="Nengine" className="mb-4 w-36" />
+        <img src="/nengine-app-icon.png" alt="Nengine" className="mb-[12.8px] w-36" />
         <h1 className="max-w-[280px] font-display text-2xl font-semibold leading-tight text-white">
           Nengine is only available on desktop
         </h1>
-        <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/50">
+        <p className="mt-[9.6px] max-w-xs text-sm leading-relaxed text-white/50">
           Please open this link on a computer to view and use the application.
         </p>
         <a
           href="https://rafaelcespedes.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg border border-hair bg-white/5 px-4 py-2.5 text-sm text-white/85 transition-colors hover:bg-white/10"
+          className="mt-[19.2px] inline-flex items-center gap-2 rounded-lg border border-hair bg-white/5 px-4 py-2.5 text-sm text-white/85 transition-colors hover:bg-white/10"
         >
           Go To Rafaelcespedes.com →
         </a>
