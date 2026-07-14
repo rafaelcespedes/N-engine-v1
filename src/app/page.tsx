@@ -178,6 +178,35 @@ export default function Page() {
           backgroundPosition: "center",
         }}
       >
+        {/* Info — hover for an about tooltip. */}
+        <div className="group absolute left-4 top-4 z-20">
+          <button
+            type="button"
+            aria-label="About Nengine"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-hair bg-white/5 text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <svg
+              viewBox="0 0 20 20"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            >
+              <circle cx="10" cy="10" r="8" />
+              <line x1="10" y1="9.5" x2="10" y2="14" />
+              <circle cx="10" cy="6.4" r="0.9" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+          <div className="pointer-events-none absolute left-0 top-10 w-[300px] rounded-lg border border-hair bg-panel p-3.5 text-xs leading-relaxed text-white/70 opacity-0 shadow-xl transition-opacity duration-150 group-hover:opacity-100">
+            Nengine is a tool created for Nucleus by Rafael Cespedes to facilitate and
+            partly automate the creation of social media assets. The tool takes the look
+            and feel of Nucleus and presents controls that allow guardrailed customization
+            — background image, color, text, and more.
+          </div>
+        </div>
+
         <div
           className="relative cursor-grab touch-none shadow-[0_20px_80px_rgba(0,0,0,0.55)] active:cursor-grabbing"
           style={{
