@@ -53,7 +53,14 @@ export function Controls({
   update: (patch: Partial<Params>) => void;
 }) {
   const selectGrid = (grid: GridPreset) =>
-    update({ grid, aspect: GRID_PRESETS[grid].aspect });
+    update({
+      grid,
+      aspect: GRID_PRESETS[grid].aspect,
+      // 5x3 can't pair with a centered plate — bump it to left.
+      ...(grid === "5x3" && params.placement === "center"
+        ? { placement: "left" as PlatePlacement }
+        : {}),
+    });
   const selectAspect = (aspect: AspectRatio) =>
     update({ aspect, grid: DEFAULT_GRID_FOR[aspect] });
 
@@ -210,14 +217,18 @@ export function Controls({
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-white/70">Placement</span>
           <div className="flex gap-1.5">
-            {(["left", "right", "center"] as PlatePlacement[]).map((pl) => (
-              <PlacementButton
-                key={pl}
-                placement={pl}
-                active={params.placement === pl}
-                onClick={() => update({ placement: pl })}
-              />
-            ))}
+            {(["left", "right", "center"] as PlatePlacement[]).map((pl) => {
+              const disabled = pl === "center" && params.grid === "5x3";
+              return (
+                <PlacementButton
+                  key={pl}
+                  placement={pl}
+                  active={params.placement === pl}
+                  disabled={disabled}
+                  onClick={() => update({ placement: pl })}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -384,10 +395,12 @@ function GridPresetButton({
 function PlacementButton({
   placement,
   active,
+  disabled = false,
   onClick,
 }: {
   placement: PlatePlacement;
   active: boolean;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   const rect =
@@ -400,9 +413,14 @@ function PlacementButton({
     <button
       type="button"
       onClick={onClick}
-      title={placement}
+      disabled={disabled}
+      title={disabled ? `${placement} (unavailable for 5x3)` : placement}
       className={`flex-1 rounded-md border p-2 transition-colors ${
-        active ? "border-white/80 bg-white/10" : "border-hair hover:border-white/40"
+        disabled
+          ? "cursor-not-allowed border-hair opacity-30"
+          : active
+            ? "border-white/80 bg-white/10"
+            : "border-hair hover:border-white/40"
       }`}
     >
       <svg viewBox="0 0 28 24" className="w-full">

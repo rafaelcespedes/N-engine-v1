@@ -65,7 +65,12 @@ export default function Page() {
   // its content and an inactive one stays off.
   const randomize = useCallback(() => {
     setPlaceholder(randomPlaceholder(placeholder.id));
-    setParams((p) => ({ ...p, ...randomConfig() }));
+    setParams((p) => {
+      const next = { ...p, ...randomConfig() };
+      // 5x3 can't pair with a centered plate — the center block is too wide/short.
+      if (next.grid === "5x3" && next.placement === "center") next.placement = "left";
+      return next;
+    });
   }, [placeholder.id]);
 
   // Export the composited canvas as a JPEG (opaque, web/Twitter-safe).
