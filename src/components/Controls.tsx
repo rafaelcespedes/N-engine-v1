@@ -242,7 +242,7 @@ export function Controls({
             value={params.plateLogoPos}
             options={[
               { value: "top", label: "Top left" },
-              { value: "bottom", label: "Bottom left" },
+              { value: "bottom", label: "Bottom right" },
             ]}
             onChange={(v) => update({ plateLogoPos: v as PlateLogoPos })}
           />

@@ -286,7 +286,11 @@ function PlateCopy({
   );
   const logoBlock = logo ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/nengine-mark.svg" alt="" className="w-[15cqw]" />
+    <img
+      src="/nengine-mark.svg"
+      alt=""
+      className={`w-[15cqw] ${logoPos === "bottom" ? "self-end" : ""}`}
+    />
   ) : null;
 
   return (
