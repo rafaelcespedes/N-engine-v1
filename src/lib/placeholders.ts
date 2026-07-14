@@ -37,7 +37,8 @@ export const PLACEHOLDERS: Placeholder[] = [
 ];
 
 /** The one loaded on first paint. */
-export const DEFAULT_PLACEHOLDER: Placeholder = PLACEHOLDERS[0];
+export const DEFAULT_PLACEHOLDER: Placeholder =
+  PLACEHOLDERS.find((p) => p.id === "data") ?? PLACEHOLDERS[0];
 
 export function getPlaceholder(id: string): Placeholder | undefined {
   return PLACEHOLDERS.find((p) => p.id === id);
