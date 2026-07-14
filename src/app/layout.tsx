@@ -16,8 +16,9 @@ const body = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Nengine",
-  description: "Image → grid system.",
+  title: "Generative Tool for Nucleus",
+  description:
+    "Nengine is a tool created for Nucleus by Rafael Cespedes to facilitate and partly automate the creation of social media assets. The tool takes the look and feel of Nucleus and presents controls that allow guardrailed customization — background image, color, text, and more.",
 };
 
 export default function RootLayout({
