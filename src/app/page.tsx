@@ -201,7 +201,13 @@ export default function Page() {
           />
 
           {copyRect && (
-            <PlateCopy rect={copyRect} title={params.plateTitle} body={params.plateBody} />
+            <PlateCopy
+              rect={copyRect}
+              title={params.plateTitle}
+              body={params.plateBody}
+              logo={params.plateLogo}
+              logoPos={params.plateLogoPos}
+            />
           )}
 
           {error && (
@@ -241,30 +247,25 @@ export default function Page() {
 }
 
 /**
- * Plate copy, laid over the plate block. The box is a size container, so the copy is
- * sized in container-query units — it scales to fit whatever the plate's dimensions are.
+ * Plate contents (logo + copy), laid over the plate block. The box is a size container,
+ * so everything is sized in container-query units and scales to the plate's dimensions.
+ * The logo and copy sit at opposite ends: logo top → copy bottom, logo bottom → copy top.
  */
 function PlateCopy({
   rect,
   title,
   body,
+  logo,
+  logoPos,
 }: {
   rect: { x: number; y: number; w: number; h: number };
   title: string;
   body: string;
+  logo: boolean;
+  logoPos: "top" | "bottom";
 }) {
-  return (
-    <div
-      className="pointer-events-none absolute flex flex-col justify-end overflow-hidden"
-      style={{
-        left: `${rect.x * 100}%`,
-        top: `${rect.y * 100}%`,
-        width: `${rect.w * 100}%`,
-        height: `${rect.h * 100}%`,
-        containerType: "size",
-        padding: "4%",
-      }}
-    >
+  const copyBlock = (
+    <div className="w-full">
       {title && (
         <div
           className="font-display font-normal leading-[0.9] text-white"
@@ -280,6 +281,42 @@ function PlateCopy({
         >
           {body}
         </div>
+      )}
+    </div>
+  );
+  const logoBlock = logo ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/nengine-mark.svg" alt="" className="w-[15cqw]" />
+  ) : null;
+
+  return (
+    <div
+      className={`pointer-events-none absolute flex flex-col items-start overflow-hidden ${
+        logo ? "justify-between" : "justify-end"
+      }`}
+      style={{
+        left: `${rect.x * 100}%`,
+        top: `${rect.y * 100}%`,
+        width: `${rect.w * 100}%`,
+        height: `${rect.h * 100}%`,
+        containerType: "size",
+        padding: "4%",
+      }}
+    >
+      {logo ? (
+        logoPos === "top" ? (
+          <>
+            {logoBlock}
+            {copyBlock}
+          </>
+        ) : (
+          <>
+            {copyBlock}
+            {logoBlock}
+          </>
+        )
+      ) : (
+        copyBlock
       )}
     </div>
   );

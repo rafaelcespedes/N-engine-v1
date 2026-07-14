@@ -24,6 +24,9 @@ export type OffsetDirection = "up" | "down" | "left" | "right";
 
 export type PlatePlacement = "left" | "right" | "center";
 
+/** Where the plate logo sits (copy takes the opposite end). */
+export type PlateLogoPos = "top" | "bottom";
+
 export type DotShape = "circle" | "square" | "glyph";
 
 export type ColorMode = "mono" | "duotone" | "source";
@@ -82,6 +85,9 @@ export interface Params {
   plateCopy: boolean;
   plateTitle: string;
   plateBody: string;
+  /** Logo mark inside the plate; when on, copy takes the opposite end. */
+  plateLogo: boolean;
+  plateLogoPos: PlateLogoPos;
 
   // --- Stipple layer. Client-side. Currently bypassed — the library supplies
   //     already-stippled images — but kept for when live stippling returns. ---
@@ -109,6 +115,8 @@ export const DEFAULT_PARAMS: Params = {
   plateCopy: false,
   plateTitle: "The New Standard",
   plateBody: "A composable grid system for generative brand art.",
+  plateLogo: true,
+  plateLogoPos: "top",
 
   stipple: {
     mode: "fast",

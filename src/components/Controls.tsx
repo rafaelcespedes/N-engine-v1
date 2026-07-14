@@ -18,6 +18,7 @@ import type {
   OffsetDirection,
   PanelColor,
   Params,
+  PlateLogoPos,
   PlatePlacement,
 } from "@/lib/params";
 import { GRID_PRESETS, DEFAULT_GRID_FOR } from "@/lib/grid";
@@ -229,6 +230,23 @@ export function Controls({
           rows={2}
           className="w-full resize-none rounded-md border border-hair bg-transparent px-2 py-1.5 text-xs text-white/80 placeholder:text-white/25 focus:outline-none"
         />
+
+        <Feature
+          title="Logo"
+          nested
+          active={params.plateLogo}
+          onToggle={(v) => update({ plateLogo: v })}
+        >
+          <Segmented
+            label="Alignment"
+            value={params.plateLogoPos}
+            options={[
+              { value: "top", label: "Top left" },
+              { value: "bottom", label: "Bottom left" },
+            ]}
+            onChange={(v) => update({ plateLogoPos: v as PlateLogoPos })}
+          />
+        </Feature>
       </Feature>
         </ScrollArea>
       </div>
