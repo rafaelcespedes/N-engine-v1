@@ -54,14 +54,24 @@ export function randomConfig(): RandomFields {
   const panelColors: PanelColor[] =
     Math.random() < 0.5 ? [pick(MONO), pick(ACCENTS)] : [pick(MONO)];
 
+  const gridLines = Math.random() < 0.65;
+  let panel = Math.random() < 0.85;
+  let sliceShift = Math.random() < 0.5;
+  // Never serve a bare "background + format" result — guarantee a real feature (a panel
+  // or a slice shift), so every roll does more than the image/aspect/grid.
+  if (!panel && !sliceShift) {
+    if (Math.random() < 0.6) panel = true;
+    else sliceShift = true;
+  }
+
   return {
     aspect,
     grid,
-    gridLines: Math.random() < 0.65,
-    panel: Math.random() < 0.85,
+    gridLines,
+    panel,
     panelColors,
     panelDensity: 0.25 + Math.random() * 0.4, // 0.25–0.65
-    sliceShift: Math.random() < 0.5,
+    sliceShift,
     offset: pick(OFFSETS),
     offsetDirection: pick(DIRECTIONS),
     seed: Math.floor(Math.random() * 1e9),

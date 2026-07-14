@@ -132,7 +132,7 @@ export default function Page() {
   return (
     <>
       {/* Mobile gate — the compositor needs a desktop-width canvas + rail. */}
-      <div className="flex h-screen w-screen flex-col items-center justify-center bg-ink px-8 text-center text-white md:hidden">
+      <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#131313] px-8 text-center text-white md:hidden">
         {/* App-icon (white tile + shadow baked into the PNG). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/nengine-app-icon.png" alt="Nengine" className="mb-4 w-36" />

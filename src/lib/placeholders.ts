@@ -35,7 +35,6 @@ export const PLACEHOLDERS: Placeholder[] = [
   ph("data", "Data"),
   ph("eye", "Eye"),
   ph("graphs", "Graphs"),
-  ph("magnify", "Magnify"),
 ];
 
 /** The one loaded on first paint. */
