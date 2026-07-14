@@ -6,6 +6,18 @@
   color-scheme: dark;
 }
 
+/* Boot loader — expanding ripple rings. */
+@keyframes nengine-ripple {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
 /* Modern, backgroundless scrollbar — thin thumb, no track. `scrollbar-gutter: stable`
    reserves the gutter so content never shifts when the scrollbar appears/disappears. */
 .scroll-clean {

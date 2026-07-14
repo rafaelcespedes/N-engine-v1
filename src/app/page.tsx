@@ -92,6 +92,38 @@ export default function Page() {
   const showCopy = params.plate && params.plateCopy;
   const copyRect = showCopy ? plateRect(params.grid, params.placement) : null;
 
+  // Boot loader — show the ripple until the first render is ready, for at least MIN_BOOT
+  // so it reads as intentional rather than a flash on cached/fast loads.
+  const [booted, setBooted] = useState(false);
+  const mountedAt = useRef(Date.now());
+  useEffect(() => {
+    if (loading || booted) return;
+    const MIN_BOOT = 700;
+    const wait = Math.max(0, MIN_BOOT - (Date.now() - mountedAt.current));
+    const t = setTimeout(() => setBooted(true), wait);
+    return () => clearTimeout(t);
+  }, [loading, booted]);
+
+  // Draggable artboard that springs back to center on release.
+  const dragOrigin = useRef<{ x: number; y: number } | null>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [springing, setSpringing] = useState(false);
+  const onDragStart = (e: React.PointerEvent) => {
+    dragOrigin.current = { x: e.clientX - offset.x, y: e.clientY - offset.y };
+    setSpringing(false);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+  const onDragMove = (e: React.PointerEvent) => {
+    if (!dragOrigin.current) return;
+    setOffset({ x: e.clientX - dragOrigin.current.x, y: e.clientY - dragOrigin.current.y });
+  };
+  const onDragEnd = () => {
+    if (!dragOrigin.current) return;
+    dragOrigin.current = null;
+    setSpringing(true);
+    setOffset({ x: 0, y: 0 });
+  };
+
   return (
     <>
       {/* Mobile gate — the compositor needs a desktop-width canvas + rail. */}
@@ -103,7 +135,7 @@ export default function Page() {
           Nengine is only available on desktop
         </h1>
         <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/50">
-          To view and use this application please open this link on your computer.
+          Please open this link on a computer to view and use the application.
         </p>
         <a
           href="https://rafaelcespedes.com"
@@ -116,6 +148,20 @@ export default function Page() {
       </div>
 
       <main className="hidden h-screen w-screen overflow-hidden bg-ink text-white md:flex">
+        {/* Boot loader — ripple rings around the mark until the first render is ready. */}
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-ink transition-opacity duration-500 ${
+            booted ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
+        >
+          <div className="relative flex h-20 w-20 items-center justify-center">
+            <span className="absolute inset-0 rounded-full border border-white/40 [animation:nengine-ripple_1.6s_ease-out_infinite]" />
+            <span className="absolute inset-0 rounded-full border border-white/40 [animation:nengine-ripple_1.6s_ease-out_infinite] [animation-delay:0.8s]" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/nengine-mark.svg" alt="" className="relative h-8 w-auto" />
+          </div>
+        </div>
+
         {/* Canvas stage — dotted "canvas" surface behind the frame */}
       <section
         ref={stageRef}
@@ -130,8 +176,19 @@ export default function Page() {
         }}
       >
         <div
-          className="relative shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
-          style={{ width: size.w, height: size.h }}
+          className="relative cursor-grab touch-none shadow-[0_20px_80px_rgba(0,0,0,0.55)] active:cursor-grabbing"
+          style={{
+            width: size.w,
+            height: size.h,
+            transform: `translate(${offset.x}px, ${offset.y}px)`,
+            transition: springing
+              ? "transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)"
+              : "none",
+          }}
+          onPointerDown={onDragStart}
+          onPointerMove={onDragMove}
+          onPointerUp={onDragEnd}
+          onPointerCancel={onDragEnd}
         >
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
@@ -162,8 +219,8 @@ export default function Page() {
         </a>
       </section>
 
-      {/* Control rail */}
-      <aside className="w-[340px] shrink-0 border-l border-hair bg-panel">
+      {/* Control rail — floating card */}
+      <aside className="my-4 mr-4 w-[340px] shrink-0 overflow-hidden rounded-2xl bg-panel shadow-2xl ring-1 ring-white/5">
         <Controls
           params={params}
           placeholder={placeholder}
