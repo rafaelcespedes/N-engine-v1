@@ -70,7 +70,7 @@ export function Controls({
     update({ panelColors: c ? [color1, c] : [color1] });
 
   return (
-    <div className="scroll-clean flex h-full flex-col overflow-y-scroll">
+    <div className="scroll-clean flex h-full flex-col overflow-y-auto">
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-hair bg-panel px-4 py-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/nengine-mark.svg" alt="Nengine" className="h-[22px] w-auto" />

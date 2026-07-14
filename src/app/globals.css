@@ -18,26 +18,13 @@
   }
 }
 
-/* Modern, backgroundless scrollbar — thin thumb, no track. `scrollbar-gutter: stable`
-   reserves the gutter so content never shifts when the scrollbar appears/disappears. */
+/* Overlay scrollbar — floats on top of the content (no reserved gutter) so section
+   dividers reach the full width. We intentionally do NOT style ::-webkit-scrollbar,
+   since any custom styling forces the classic space-taking scrollbar; leaving it native
+   lets the OS overlay scrollbar render over the content. */
 .scroll-clean {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-  scrollbar-gutter: stable;
-}
-.scroll-clean::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.scroll-clean::-webkit-scrollbar-track {
-  background: transparent;
-}
-.scroll-clean::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-}
-.scroll-clean::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.28);
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
 html,

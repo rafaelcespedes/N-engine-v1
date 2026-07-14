@@ -154,11 +154,9 @@ export default function Page() {
             booted ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
         >
-          <div className="relative flex h-20 w-20 items-center justify-center">
-            <span className="absolute inset-0 rounded-full border border-white/40 [animation:nengine-ripple_1.6s_ease-out_infinite]" />
-            <span className="absolute inset-0 rounded-full border border-white/40 [animation:nengine-ripple_1.6s_ease-out_infinite] [animation-delay:0.8s]" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/nengine-mark.svg" alt="" className="relative h-8 w-auto" />
+          <div className="relative h-16 w-16">
+            <span className="absolute inset-0 rounded-full border border-white/50 [animation:nengine-ripple_1.6s_ease-out_infinite]" />
+            <span className="absolute inset-0 rounded-full border border-white/50 [animation:nengine-ripple_1.6s_ease-out_infinite] [animation-delay:0.8s]" />
           </div>
         </div>
 
