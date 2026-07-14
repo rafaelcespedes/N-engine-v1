@@ -94,8 +94,8 @@ export default function Page() {
     );
   }, [canvasRef, placeholder.id, params.seed]);
 
-  const showCopy = params.plate && params.plateCopy;
-  const copyRect = showCopy ? plateRect(params.grid, params.placement) : null;
+  // Copy comes with the plate — no separate toggle.
+  const copyRect = params.plate ? plateRect(params.grid, params.placement) : null;
 
   // Boot loader — show the ripple until the first render is ready, for at least MIN_BOOT
   // so it reads as intentional rather than a flash on cached/fast loads.

@@ -232,27 +232,21 @@ export function Controls({
           </div>
         </div>
 
-        <Feature
-          title="Copy"
-          nested
-          active={params.plateCopy}
-          onToggle={(v) => update({ plateCopy: v })}
-        >
-          <input
-            type="text"
-            value={params.plateTitle}
-            onChange={(e) => update({ plateTitle: e.target.value })}
-            placeholder="Title"
-            className="w-full rounded-md border border-hair bg-transparent px-2 py-1.5 font-display text-sm text-white/90 placeholder:text-white/25 focus:outline-none"
-          />
-          <textarea
-            value={params.plateBody}
-            onChange={(e) => update({ plateBody: e.target.value })}
-            placeholder="Body"
-            rows={2}
-            className="w-full resize-none rounded-md border border-hair bg-transparent px-2 py-1.5 text-xs text-white/80 placeholder:text-white/25 focus:outline-none"
-          />
-        </Feature>
+        {/* Copy comes with the plate — no separate activation. */}
+        <input
+          type="text"
+          value={params.plateTitle}
+          onChange={(e) => update({ plateTitle: e.target.value })}
+          placeholder="Title"
+          className="w-full rounded-md border border-hair bg-transparent px-2 py-1.5 font-display text-sm text-white/90 placeholder:text-white/25 focus:outline-none"
+        />
+        <textarea
+          value={params.plateBody}
+          onChange={(e) => update({ plateBody: e.target.value })}
+          placeholder="Body"
+          rows={2}
+          className="w-full resize-none rounded-md border border-hair bg-transparent px-2 py-1.5 text-xs text-white/80 placeholder:text-white/25 focus:outline-none"
+        />
       </Feature>
     </ScrollArea>
   );
