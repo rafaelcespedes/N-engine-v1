@@ -323,8 +323,12 @@ function SwatchPicker({
               }`}
               style={{
                 backgroundColor: PANEL_HEX[c],
+                // Inline boxShadow would override the Tailwind ring (also a box-shadow),
+                // so only draw the black swatch's outline when it isn't selected.
                 boxShadow:
-                  c === "black" ? "inset 0 0 0 1px rgba(255,255,255,0.25)" : undefined,
+                  c === "black" && !sel
+                    ? "inset 0 0 0 1px rgba(255,255,255,0.25)"
+                    : undefined,
               }}
             />
           );
