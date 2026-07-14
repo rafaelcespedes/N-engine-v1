@@ -213,7 +213,7 @@ export function Controls({
         />
       </Feature>
 
-      <Feature title="Plate & Copy" active={params.plate} onToggle={(v) => update({ plate: v })}>
+      <Feature title="Plate & copy" active={params.plate} onToggle={(v) => update({ plate: v })}>
         <div className="flex flex-col gap-1.5">
           <span className="text-xs text-white/70">Placement</span>
           <div className="flex gap-1.5">

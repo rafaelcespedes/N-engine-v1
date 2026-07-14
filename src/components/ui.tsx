@@ -28,8 +28,13 @@ export function ScrollArea({
       setThumb((t) => (t.show ? { ...t, show: false } : t));
       return;
     }
-    const h = Math.max(28, (ch / sh) * ch);
-    const top = ((st / (sh - ch)) * (ch - h)) || 0;
+    // Start the track below a sticky header (it's always pinned, so the thumb shouldn't
+    // run behind it).
+    const stickyEl = el.querySelector<HTMLElement>(":scope > .sticky");
+    const inset = stickyEl ? stickyEl.offsetHeight : 0;
+    const track = ch - inset;
+    const h = Math.max(28, (ch / sh) * track);
+    const top = inset + ((st / (sh - ch)) * (track - h) || 0);
     setThumb({ h, top, show: true });
   }, []);
 
@@ -68,7 +73,7 @@ export function ScrollArea({
   };
 
   return (
-    <div className="relative h-full overflow-hidden">
+    <div className="group relative h-full overflow-hidden">
       <div
         ref={viewport}
         className={`h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
@@ -81,7 +86,7 @@ export function ScrollArea({
           onPointerMove={onMove}
           onPointerUp={onUp}
           onPointerCancel={onUp}
-          className="absolute right-1 z-20 w-1.5 cursor-pointer rounded-full bg-white/20 transition-colors hover:bg-white/40"
+          className="absolute right-1 z-20 w-1.5 cursor-pointer rounded-full bg-white/25 opacity-0 transition-opacity duration-200 hover:bg-white/40 group-hover:opacity-100"
           style={{ height: thumb.h, top: thumb.top }}
         />
       )}

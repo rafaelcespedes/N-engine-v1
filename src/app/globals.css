@@ -6,14 +6,17 @@
   color-scheme: dark;
 }
 
-/* Boot loader — expanding ripple rings. */
+/* Boot loader — expanding ripple rings (staggered, so two sizes show at once). */
 @keyframes nengine-ripple {
   0% {
-    transform: scale(0.4);
-    opacity: 0.5;
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.6;
   }
   100% {
-    transform: scale(1.9);
+    transform: scale(1.6);
     opacity: 0;
   }
 }

@@ -160,8 +160,8 @@ export default function Page() {
           }`}
         >
           <div className="relative h-16 w-16">
-            <span className="absolute inset-0 rounded-full border border-white/50 [animation:nengine-ripple_1.6s_ease-out_infinite]" />
-            <span className="absolute inset-0 rounded-full border border-white/50 [animation:nengine-ripple_1.6s_ease-out_infinite] [animation-delay:0.8s]" />
+            <span className="absolute inset-0 rounded-full border border-white/50 [animation:nengine-ripple_1.6s_ease-out_infinite_both]" />
+            <span className="absolute inset-0 rounded-full border border-white/50 [animation:nengine-ripple_1.6s_ease-out_0.8s_infinite_both]" />
           </div>
         </div>
 
@@ -222,15 +222,17 @@ export default function Page() {
           onPointerUp={onDragEnd}
           onPointerCancel={onDragEnd}
         >
-          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+          {/* Fade between images/configs for a smoother swap on select/randomize. */}
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 h-full w-full transition-opacity duration-300 ease-out"
+            style={{ opacity: loading ? 0 : 1 }}
+          />
 
           {copyRect && (
             <PlateCopy rect={copyRect} title={params.plateTitle} body={params.plateBody} />
           )}
 
-          {loading && (
-            <div className="absolute inset-0 animate-pulse rounded-sm bg-white/[0.06]" />
-          )}
           {error && (
             <div className="absolute inset-0 flex items-center justify-center px-4 text-center font-mono text-xs text-red-400/80">
               {error}

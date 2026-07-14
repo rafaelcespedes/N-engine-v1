@@ -58,7 +58,7 @@ export function randomConfig(): RandomFields {
     aspect,
     grid,
     gridLines: Math.random() < 0.65,
-    panel: Math.random() < 0.65,
+    panel: Math.random() < 0.85,
     panelColors,
     panelDensity: 0.25 + Math.random() * 0.4, // 0.25–0.65
     sliceShift: Math.random() < 0.5,
