@@ -268,7 +268,7 @@ function PlateCopy({
       )}
       {body && (
         <div
-          className="mt-[2.8%] font-sans leading-[1.2] text-white/75"
+          className="mt-[2.52%] font-sans leading-[1.3] text-white/75"
           style={{ fontSize: "min(6cqw, 9cqh)" }}
         >
           {body}
