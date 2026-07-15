@@ -6,6 +6,16 @@
   color-scheme: dark;
 }
 
+/* Skeleton shimmer — a sweep across the loading placeholder. */
+@keyframes nengine-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* Boot loader — expanding ripple rings (staggered, so two sizes show at once). */
 @keyframes nengine-ripple {
   0% {

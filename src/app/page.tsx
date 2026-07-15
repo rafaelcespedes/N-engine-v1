@@ -109,6 +109,18 @@ export default function Page() {
     return () => clearTimeout(t);
   }, [loading, booted]);
 
+  // Delayed loading skeleton — only shows if a load actually takes a moment (so cached/
+  // instant swaps don't flash it). Kept mounted through the fade-out.
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  useEffect(() => {
+    if (loading) {
+      const t = setTimeout(() => setShowSkeleton(true), 180);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setShowSkeleton(false), 320);
+    return () => clearTimeout(t);
+  }, [loading]);
+
   // Draggable artboard that springs back to center on release.
   const dragOrigin = useRef<{ x: number; y: number } | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -193,12 +205,7 @@ export default function Page() {
           onPointerUp={onDragEnd}
           onPointerCancel={onDragEnd}
         >
-          {/* Fade between images/configs for a smoother swap on select/randomize. */}
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 h-full w-full transition-opacity duration-300 ease-out"
-            style={{ opacity: loading ? 0 : 1 }}
-          />
+          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
           {copyRect && (
             <PlateCopy
@@ -209,6 +216,15 @@ export default function Page() {
               logoPos={params.plateLogoPos}
             />
           )}
+
+          {/* Loading skeleton — gray shimmer over the art, fades out to reveal the image. */}
+          <div
+            className={`pointer-events-none absolute inset-0 overflow-hidden bg-[#242424] transition-opacity duration-300 ${
+              showSkeleton ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent [animation:nengine-shimmer_1.6s_ease-in-out_infinite]" />
+          </div>
 
           {error && (
             <div className="absolute inset-0 flex items-center justify-center px-4 text-center font-mono text-xs text-red-400/80">
