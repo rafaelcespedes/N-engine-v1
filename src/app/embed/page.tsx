@@ -141,6 +141,9 @@ export default function EmbedPage() {
               body={params.plateBody}
               logo={params.plateLogo}
               logoPos={params.plateLogoPos}
+              logoScale={
+                params.grid === "7x4" && params.placement === "center" ? 0.5 : 1
+              }
             />
           )}
 
@@ -187,12 +190,15 @@ function EmbedPlateCopy({
   body,
   logo,
   logoPos,
+  logoScale = 1,
 }: {
   rect: { x: number; y: number; w: number; h: number };
   title: string;
   body: string;
   logo: boolean;
   logoPos: "top" | "bottom";
+  /** The centered plate on 7x4 is very wide/short, so its logo renders at 50%. */
+  logoScale?: number;
 }) {
   const copyBlock = (
     <div className="w-full">
@@ -219,7 +225,8 @@ function EmbedPlateCopy({
     <img
       src="/nengine-mark.svg"
       alt=""
-      className={`w-[15cqw] ${logoPos === "bottom" ? "self-end" : ""}`}
+      className={logoPos === "bottom" ? "self-end" : ""}
+      style={{ width: `${15 * logoScale}cqw` }}
     />
   ) : null;
 
