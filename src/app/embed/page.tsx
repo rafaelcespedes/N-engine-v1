@@ -118,7 +118,7 @@ export default function EmbedPage() {
     <main className="flex h-dvh w-full flex-col gap-3 bg-[#131313] text-white">
       <div
         ref={stageRef}
-        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[16px] border border-hair"
+        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[16px]"
         style={{
           padding: PAD,
           backgroundColor: "#1e1e1e",
