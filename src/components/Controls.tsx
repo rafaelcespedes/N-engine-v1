@@ -18,7 +18,6 @@ import type {
   OffsetDirection,
   PanelColor,
   Params,
-  PlateLogoPos,
   PlatePlacement,
   PlateTheme,
 } from "@/lib/params";
@@ -249,17 +248,7 @@ export function Controls({
           nested
           active={params.plateLogo}
           onToggle={(v) => update({ plateLogo: v })}
-        >
-          <Segmented
-            label="Alignment"
-            value={params.plateLogoPos}
-            options={[
-              { value: "top", label: "Top left" },
-              { value: "bottom", label: "Bottom right" },
-            ]}
-            onChange={(v) => update({ plateLogoPos: v as PlateLogoPos })}
-          />
-        </Feature>
+        />
       </Feature>
 
       {/* ANIMATION — one fixed choreography, no knobs. Download exports a video. */}

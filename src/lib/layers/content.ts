@@ -12,7 +12,7 @@
  */
 
 import type { Grid } from "../grid";
-import type { GridPreset, PlateLogoPos, PlatePlacement, PlateTheme } from "../params";
+import type { GridPreset, PlatePlacement, PlateTheme } from "../params";
 import { plateRect } from "./plate";
 
 export interface ContentAssets {
@@ -28,7 +28,6 @@ export interface ContentParams {
   title: string;
   body: string;
   logo: boolean;
-  logoPos: PlateLogoPos;
   theme: PlateTheme;
 }
 
@@ -152,9 +151,8 @@ export function drawContent(
   const logoH = logoW * LOGO_ASPECT;
   const showLogo = content.logo && !!logoImg;
 
-  // Copy sits opposite the logo: logo top → copy bottom; logo bottom → copy top.
-  const copyTop =
-    showLogo && content.logoPos === "bottom" ? innerTop : innerBottom - copyH;
+  // Logo top-left, copy bottom-left.
+  const copyTop = innerBottom - copyH;
 
   if (titleLines.length) {
     ctx.font = titleFont;
@@ -175,18 +173,7 @@ export function drawContent(
   }
 
   if (showLogo && logoImg) {
-    if (content.logoPos === "top") {
-      ctx.drawImage(logoImg, innerX, innerTop, logoW, logoH);
-    } else {
-      // Bottom-right, mirroring the old overlay's self-end alignment.
-      ctx.drawImage(
-        logoImg,
-        x + w - pad - logoW,
-        innerBottom - logoH,
-        logoW,
-        logoH
-      );
-    }
+    ctx.drawImage(logoImg, innerX, innerTop, logoW, logoH);
   }
 
   ctx.restore();

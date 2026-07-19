@@ -184,7 +184,6 @@ export function useCompositor(src: string, params: Params): Compositor {
             title: p.plateTitle,
             body: p.plateBody,
             logo: p.plateLogo,
-            logoPos: p.plateLogoPos,
             theme: p.plateTheme,
           },
           contentAssets.current,

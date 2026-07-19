@@ -106,7 +106,6 @@ export default function EmbedPage() {
         plateTitle: pair.title,
         plateBody: pair.body,
         plateLogo: Math.random() < 0.85,
-        plateLogoPos: Math.random() < 0.6 ? "top" : "bottom",
         // Half the rolls play the build-in animation (plays once, then holds).
         animate: Math.random() < 0.5,
       };

@@ -24,9 +24,6 @@ export type OffsetDirection = "up" | "down" | "left" | "right";
 
 export type PlatePlacement = "left" | "right" | "center";
 
-/** Where the plate logo sits (copy takes the opposite end). */
-export type PlateLogoPos = "top" | "bottom";
-
 /** Plate color scheme: dark = black plate / white content, light = the flip. */
 export type PlateTheme = "dark" | "light";
 
@@ -88,9 +85,8 @@ export interface Params {
   plateCopy: boolean;
   plateTitle: string;
   plateBody: string;
-  /** Logo mark inside the plate; when on, copy takes the opposite end. */
+  /** Logo mark in the plate's top-left; copy sits bottom-left. */
   plateLogo: boolean;
-  plateLogoPos: PlateLogoPos;
   /** Black plate / white content ("dark", default) or flipped ("light"). */
   plateTheme: PlateTheme;
 
@@ -127,7 +123,6 @@ export const DEFAULT_PARAMS: Params = {
   plateTitle: "The New Standard",
   plateBody: "A composable grid system for generative brand art.",
   plateLogo: true,
-  plateLogoPos: "top",
   plateTheme: "dark",
 
   animate: false,
