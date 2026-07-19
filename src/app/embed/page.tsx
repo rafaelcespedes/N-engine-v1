@@ -159,7 +159,7 @@ export default function EmbedPage() {
         <button
           type="button"
           onClick={randomize}
-          className="w-full rounded-md border border-hair bg-white/5 px-4 py-2.5 text-xs text-white/80 transition-colors hover:bg-white/10"
+          className="w-full rounded-md border border-hair bg-white/5 px-4 py-2.5 text-[0.9rem] text-white/80 transition-colors hover:bg-white/10"
         >
           ↻ Generate new output
         </button>
