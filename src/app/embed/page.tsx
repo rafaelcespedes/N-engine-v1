@@ -164,7 +164,7 @@ export default function EmbedPage() {
           ↻ Generate new artifact
         </button>
         <p className="text-center text-[11px] leading-relaxed text-white/40">
-          Stripped down version of the tool I created. View and test the full version{" "}
+          This is a lite version of the tool I created. View and test the full version{" "}
           <a
             href="https://nengine.rafaelcespedes.com"
             target="_blank"
