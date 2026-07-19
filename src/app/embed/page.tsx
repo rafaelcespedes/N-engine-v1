@@ -49,8 +49,10 @@ function plateScales(
   placement: PlatePlacement
 ): { logo: number; text: number } {
   if (grid === "7x4" && placement === "center") return { logo: 0.5, text: 1 };
-  if ((grid === "5x6" || grid === "4x5") && placement === "right")
-    return { logo: 1.3, text: 1.3 };
+  // Right-half plates are narrow everywhere -> content up 30%.
+  if (placement === "right") return { logo: 1.3, text: 1.3 };
+  // 4x5 plates are narrow at every placement -> up 20% (right handled above).
+  if (grid === "4x5") return { logo: 1.2, text: 1.2 };
   return { logo: 1, text: 1 };
 }
 
