@@ -154,14 +154,26 @@ export default function EmbedPage() {
         </div>
       </div>
 
-      <div className="flex justify-center px-4 pb-4">
+      <div className="flex flex-col gap-2.5" style={{ padding: `0 ${PAD}px ${PAD - 4}px` }}>
         <button
           type="button"
           onClick={randomize}
-          className="w-full max-w-[280px] rounded-md border border-hair bg-white/5 px-4 py-2 text-xs text-white/80 transition-colors hover:bg-white/10"
+          className="w-full rounded-md border border-hair bg-white/5 px-4 py-2.5 text-xs text-white/80 transition-colors hover:bg-white/10"
         >
-          ↻ Randomize
+          ↻ Generate new output
         </button>
+        <p className="text-center text-[11px] leading-relaxed text-white/40">
+          Stripped down version of the tool I created. View and test the full version{" "}
+          <a
+            href="https://nengine.rafaelcespedes.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/70 underline underline-offset-2 transition-colors hover:text-white"
+          >
+            here
+          </a>
+          .
+        </p>
       </div>
     </main>
   );
