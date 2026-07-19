@@ -38,6 +38,22 @@ function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/**
+ * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
+ * plates need correcting: the centered plate on 7x4 is very wide/short (logo renders
+ * huge → 50%), and the right plate on portrait grids is narrow/tall (logo + text render
+ * tiny → both +30%).
+ */
+function plateScales(
+  grid: Params["grid"],
+  placement: PlatePlacement
+): { logo: number; text: number } {
+  if (grid === "7x4" && placement === "center") return { logo: 0.5, text: 1 };
+  if ((grid === "5x6" || grid === "4x5") && placement === "right")
+    return { logo: 1.3, text: 1.3 };
+  return { logo: 1, text: 1 };
+}
+
 function useContainedSize(ratioW: number, ratioH: number) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -141,9 +157,7 @@ export default function EmbedPage() {
               body={params.plateBody}
               logo={params.plateLogo}
               logoPos={params.plateLogoPos}
-              logoScale={
-                params.grid === "7x4" && params.placement === "center" ? 0.5 : 1
-              }
+              scales={plateScales(params.grid, params.placement)}
             />
           )}
 
@@ -190,22 +204,22 @@ function EmbedPlateCopy({
   body,
   logo,
   logoPos,
-  logoScale = 1,
+  scales = { logo: 1, text: 1 },
 }: {
   rect: { x: number; y: number; w: number; h: number };
   title: string;
   body: string;
   logo: boolean;
   logoPos: "top" | "bottom";
-  /** The centered plate on 7x4 is very wide/short, so its logo renders at 50%. */
-  logoScale?: number;
+  /** Per-plate-proportion corrections — see plateScales. */
+  scales?: { logo: number; text: number };
 }) {
   const copyBlock = (
     <div className="w-full">
       {title && (
         <div
           className="font-display font-normal leading-[0.9] text-white"
-          style={{ fontSize: "min(15cqw, 22cqh)" }}
+          style={{ fontSize: `min(${15 * scales.text}cqw, ${22 * scales.text}cqh)` }}
         >
           {title}
         </div>
@@ -213,7 +227,7 @@ function EmbedPlateCopy({
       {body && (
         <div
           className="mt-[2.52%] font-sans leading-[1.3] text-white/75"
-          style={{ fontSize: "min(6cqw, 9cqh)" }}
+          style={{ fontSize: `min(${6 * scales.text}cqw, ${9 * scales.text}cqh)` }}
         >
           {body}
         </div>
@@ -226,7 +240,7 @@ function EmbedPlateCopy({
       src="/nengine-mark.svg"
       alt=""
       className={logoPos === "bottom" ? "self-end" : ""}
-      style={{ width: `${15 * logoScale}cqw` }}
+      style={{ width: `${15 * scales.logo}cqw` }}
     />
   ) : null;
 
