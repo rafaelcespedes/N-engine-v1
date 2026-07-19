@@ -154,7 +154,7 @@ export default function EmbedPage() {
         >
           ↻ Generate new artifact
         </button>
-        <p className="text-center text-[11px] leading-relaxed text-white/40">
+        <p className="text-left text-[0.8rem] leading-relaxed text-white/50">
           This is a lite version of the tool I created. View and test the full version{" "}
           <a
             href="https://nengine.rafaelcespedes.com"
