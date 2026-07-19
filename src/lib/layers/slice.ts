@@ -20,7 +20,9 @@ export function drawSlice(
   grid: Grid,
   offset: number,
   direction: OffsetDirection,
-  seed: number
+  seed: number,
+  /** 0..1 animation multiplier on the displacement — 0 = aligned, 1 = fully shifted. */
+  progress = 1
 ): void {
   const { spec, cellW, cellH, width, height } = grid;
   const vertical = direction === "up" || direction === "down";
@@ -33,13 +35,13 @@ export function drawSlice(
 
   if (vertical) {
     for (let c = 0; c < spec.cols; c++) {
-      const dy = Math.floor(rng() * (offset + 1)) * sign * cellH;
+      const dy = Math.floor(rng() * (offset + 1)) * sign * cellH * progress;
       const sx = c * cellW;
       ctx.drawImage(art, sx, 0, cellW, height, sx, dy, cellW, height);
     }
   } else {
     for (let r = 0; r < spec.rows; r++) {
-      const dx = Math.floor(rng() * (offset + 1)) * sign * cellW;
+      const dx = Math.floor(rng() * (offset + 1)) * sign * cellW * progress;
       const sy = r * cellH;
       ctx.drawImage(art, 0, sy, width, cellH, dx, sy, width, cellH);
     }

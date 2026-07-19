@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_PARAMS } from "@/lib/params";
 import type { Params } from "@/lib/params";
 import { previewDims } from "@/lib/grid";
-import { plateRect } from "@/lib/layers/plate";
 import { DEFAULT_PLACEHOLDER, randomPlaceholder } from "@/lib/placeholders";
 import type { Placeholder } from "@/lib/placeholders";
 import { randomConfig } from "@/lib/randomize";
@@ -12,6 +11,7 @@ import { useCompositor } from "@/components/useCompositor";
 import { Controls } from "@/components/Controls";
 
 const PAD = 48; // stage padding in px, mirrored in the style below
+
 
 /** Fit a `ratioW×ratioH` box inside the stage element, updating on resize. */
 function useContainedSize(ratioW: number, ratioH: number) {
@@ -45,7 +45,23 @@ export default function Page() {
   const [params, setParams] = useState<Params>(() => ({ ...DEFAULT_PARAMS }));
   const [placeholder, setPlaceholder] = useState<Placeholder>(DEFAULT_PLACEHOLDER);
 
-  const { canvasRef, loading, error, w, h, lastMs } = useCompositor(placeholder.src, params);
+  const { canvasRef, loading, error, w, h, lastMs, recording, replay, downloadVideo } =
+    useCompositor(placeholder.src, params);
+
+  // Space replays the build-in (ignored while typing in the copy fields).
+  useEffect(() => {
+    if (!params.animate) return;
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        replay();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [params.animate, replay]);
 
   const dims = previewDims(params.aspect);
   const { ref: stageRef, size } = useContainedSize(dims.w, dims.h);
@@ -73,8 +89,13 @@ export default function Page() {
     });
   }, [placeholder.id]);
 
-  // Export the composited canvas as a JPEG (opaque, web/Twitter-safe).
+  // Export: video of one loop when animating, otherwise a JPEG of the canvas.
   const download = useCallback(() => {
+    const base = `nengine-${placeholder.id}-${params.seed}`;
+    if (params.animate) {
+      void downloadVideo(base);
+      return;
+    }
     const canvas = canvasRef.current;
     if (!canvas) return;
     canvas.toBlob(
@@ -83,7 +104,7 @@ export default function Page() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `nengine-${placeholder.id}-${params.seed}.jpg`;
+        a.download = `${base}.jpg`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -92,10 +113,8 @@ export default function Page() {
       "image/jpeg",
       0.92
     );
-  }, [canvasRef, placeholder.id, params.seed]);
+  }, [canvasRef, placeholder.id, params.seed, params.animate, downloadVideo]);
 
-  // Copy comes with the plate — no separate toggle.
-  const copyRect = params.plate ? plateRect(params.grid, params.placement) : null;
 
   // Boot loader — show the ripple until the first render is ready, for at least MIN_BOOT
   // so it reads as intentional rather than a flash on cached/fast loads.
@@ -207,15 +226,6 @@ export default function Page() {
         >
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-          {copyRect && (
-            <PlateCopy
-              rect={copyRect}
-              title={params.plateTitle}
-              body={params.plateBody}
-              logo={params.plateLogo}
-              logoPos={params.plateLogoPos}
-            />
-          )}
 
           {/* Loading skeleton — gray shimmer over the art, fades out to reveal the image. */}
           <div
@@ -232,6 +242,17 @@ export default function Page() {
             </div>
           )}
         </div>
+
+        {/* Replay hint — only when animation is on. */}
+        {params.animate && (
+          <div className="pointer-events-none absolute left-1/2 top-4 flex -translate-x-1/2 items-center gap-1.5 rounded-lg border border-hair bg-panel px-3 py-2 text-[11px] text-white/60">
+            Press the
+            <kbd className="rounded border border-hair bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/80">
+              Space
+            </kbd>
+            key to replay animation
+          </div>
+        )}
 
         <div className="pointer-events-none absolute bottom-4 left-4 font-mono text-[10px] text-white/45">
           {placeholder.label.toLowerCase()} · {params.grid} · {w}×{h} · {lastMs}ms
@@ -254,6 +275,7 @@ export default function Page() {
           onSelectPlaceholder={selectPlaceholder}
           onRandom={randomize}
           onDownload={download}
+          recording={recording}
           update={update}
         />
       </aside>
@@ -262,82 +284,3 @@ export default function Page() {
   );
 }
 
-/**
- * Plate contents (logo + copy), laid over the plate block. The box is a size container,
- * so everything is sized in container-query units and scales to the plate's dimensions.
- * The logo and copy sit at opposite ends: logo top → copy bottom, logo bottom → copy top.
- */
-function PlateCopy({
-  rect,
-  title,
-  body,
-  logo,
-  logoPos,
-}: {
-  rect: { x: number; y: number; w: number; h: number };
-  title: string;
-  body: string;
-  logo: boolean;
-  logoPos: "top" | "bottom";
-}) {
-  const copyBlock = (
-    <div className="w-full">
-      {title && (
-        <div
-          className="font-display font-normal leading-[0.9] text-white"
-          style={{ fontSize: "min(15cqw, 22cqh)" }}
-        >
-          {title}
-        </div>
-      )}
-      {body && (
-        <div
-          className="mt-[2.52%] font-sans leading-[1.3] text-white/75"
-          style={{ fontSize: "min(6cqw, 9cqh)" }}
-        >
-          {body}
-        </div>
-      )}
-    </div>
-  );
-  const logoBlock = logo ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/nengine-mark.svg"
-      alt=""
-      className={`w-[15cqw] ${logoPos === "bottom" ? "self-end" : ""}`}
-    />
-  ) : null;
-
-  return (
-    <div
-      className={`pointer-events-none absolute flex flex-col items-start overflow-hidden ${
-        logo ? "justify-between" : "justify-end"
-      }`}
-      style={{
-        left: `${rect.x * 100}%`,
-        top: `${rect.y * 100}%`,
-        width: `${rect.w * 100}%`,
-        height: `${rect.h * 100}%`,
-        containerType: "size",
-        padding: "4%",
-      }}
-    >
-      {logo ? (
-        logoPos === "top" ? (
-          <>
-            {logoBlock}
-            {copyBlock}
-          </>
-        ) : (
-          <>
-            {copyBlock}
-            {logoBlock}
-          </>
-        )
-      ) : (
-        copyBlock
-      )}
-    </div>
-  );
-}

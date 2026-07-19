@@ -12,11 +12,13 @@ import type { Grid } from "../grid";
 export function drawGridLines(
   ctx: OffscreenCanvasRenderingContext2D,
   grid: Grid,
-  color = "rgba(255,255,255,0.22)"
+  /** 0..1 animation opacity multiplier. 1 = static. */
+  alpha = 1
 ): void {
+  if (alpha <= 0) return;
   const { spec, cellW, cellH, width, height } = grid;
   ctx.save();
-  ctx.strokeStyle = color;
+  ctx.strokeStyle = `rgba(255,255,255,${0.22 * alpha})`;
   ctx.lineWidth = 1;
   ctx.beginPath();
   // Interior lines only (1..n-1) — no edge lines. +0.5 keeps 1px lines crisp.

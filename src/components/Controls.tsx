@@ -20,6 +20,7 @@ import type {
   Params,
   PlateLogoPos,
   PlatePlacement,
+  PlateTheme,
 } from "@/lib/params";
 import { GRID_PRESETS, DEFAULT_GRID_FOR } from "@/lib/grid";
 import { PANEL_HEX } from "@/lib/palette";
@@ -44,6 +45,7 @@ export function Controls({
   onSelectPlaceholder,
   onRandom,
   onDownload,
+  recording = false,
   update,
 }: {
   params: Params;
@@ -51,6 +53,7 @@ export function Controls({
   onSelectPlaceholder: (p: Placeholder) => void;
   onRandom: () => void;
   onDownload: () => void;
+  recording?: boolean;
   update: (patch: Partial<Params>) => void;
 }) {
   const selectGrid = (grid: GridPreset) =>
@@ -215,6 +218,16 @@ export function Controls({
           </div>
         </div>
 
+        <Segmented
+          label="Color"
+          value={params.plateTheme}
+          options={[
+            { value: "dark", label: "Black / white" },
+            { value: "light", label: "White / black" },
+          ]}
+          onChange={(v) => update({ plateTheme: v as PlateTheme })}
+        />
+
         {/* Copy comes with the plate — no separate activation. */}
         <input
           type="text"
@@ -248,6 +261,18 @@ export function Controls({
           />
         </Feature>
       </Feature>
+
+      {/* ANIMATION — one fixed choreography, no knobs. Download exports a video. */}
+      <Feature
+        title="Animation"
+        active={params.animate}
+        onToggle={(v) => update({ animate: v })}
+      >
+        <p className="text-[10px] leading-relaxed text-white/30">
+          Layers build in, hold, and release on a fixed loop. Download exports one loop
+          as video.
+        </p>
+      </Feature>
         </ScrollArea>
       </div>
 
@@ -256,23 +281,35 @@ export function Controls({
         <button
           type="button"
           onClick={onDownload}
-          title="Download as JPG"
+          disabled={recording}
+          title={params.animate ? "Download animation as video" : "Download as JPG"}
           aria-label="Download image"
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-white/10 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/[0.16]"
+          className={`flex w-full items-center justify-center gap-2 rounded-md bg-white/10 py-2.5 text-sm font-medium text-white transition-colors ${
+            recording ? "cursor-wait opacity-60" : "hover:bg-white/[0.16]"
+          }`}
         >
-          <svg
-            viewBox="0 0 16 16"
-            width="15"
-            height="15"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M8 2v8M4.75 6.75 8 10l3.25-3.25M3 13.25h10" />
-          </svg>
-          Download
+          {recording ? (
+            <>
+              <span className="h-2 w-2 animate-pulse rounded-full bg-red-400" />
+              Recording…
+            </>
+          ) : (
+            <>
+              <svg
+                viewBox="0 0 16 16"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M8 2v8M4.75 6.75 8 10l3.25-3.25M3 13.25h10" />
+              </svg>
+              Download
+            </>
+          )}
         </button>
       </div>
     </div>

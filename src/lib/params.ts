@@ -27,6 +27,9 @@ export type PlatePlacement = "left" | "right" | "center";
 /** Where the plate logo sits (copy takes the opposite end). */
 export type PlateLogoPos = "top" | "bottom";
 
+/** Plate color scheme: dark = black plate / white content, light = the flip. */
+export type PlateTheme = "dark" | "light";
+
 export type DotShape = "circle" | "square" | "glyph";
 
 export type ColorMode = "mono" | "duotone" | "source";
@@ -88,6 +91,14 @@ export interface Params {
   /** Logo mark inside the plate; when on, copy takes the opposite end. */
   plateLogo: boolean;
   plateLogoPos: PlateLogoPos;
+  /** Black plate / white content ("dark", default) or flipped ("light"). */
+  plateTheme: PlateTheme;
+
+  /**
+   * Animation: a fixed build-in/hold/release loop (see src/lib/animate.ts). No user
+   * tuning — on or off. When on, Download exports a video of one loop.
+   */
+  animate: boolean;
 
   // --- Stipple layer. Client-side. Currently bypassed — the library supplies
   //     already-stippled images — but kept for when live stippling returns. ---
@@ -117,6 +128,9 @@ export const DEFAULT_PARAMS: Params = {
   plateBody: "A composable grid system for generative brand art.",
   plateLogo: true,
   plateLogoPos: "top",
+  plateTheme: "dark",
+
+  animate: false,
 
   stipple: {
     mode: "fast",

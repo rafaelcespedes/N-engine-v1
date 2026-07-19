@@ -14,6 +14,8 @@
 import type { Grid } from "../grid";
 import type { GridPreset, PlatePlacement } from "../params";
 import { GRID_PRESETS } from "../grid";
+import { makeRng, deriveSeed } from "../rng";
+import { easeOutCubic, wipeRect, type WipeDirection } from "../animate";
 
 export interface Rect {
   x: number;
@@ -22,8 +24,8 @@ export interface Rect {
   h: number;
 }
 
-/** Plate block as 0–1 fractions of the canvas, snapped to cells. */
-export function plateRect(preset: GridPreset, placement: PlatePlacement): Rect {
+/** Plate block in cell indices [c0,c1) × [r0,r1). */
+export function plateCells(preset: GridPreset, placement: PlatePlacement) {
   const { cols, rows } = GRID_PRESETS[preset];
   let c0: number, c1: number, r0: number, r1: number;
   if (placement === "left") {
@@ -42,16 +44,30 @@ export function plateRect(preset: GridPreset, placement: PlatePlacement): Rect {
     r0 = Math.round(rows * 0.2);
     r1 = rows - r0;
   }
+  return { c0, c1, r0, r1, cols, rows };
+}
+
+/** Plate block as 0–1 fractions of the canvas, snapped to cells. */
+export function plateRect(preset: GridPreset, placement: PlatePlacement): Rect {
+  const { c0, c1, r0, r1, cols, rows } = plateCells(preset, placement);
   return { x: c0 / cols, y: r0 / rows, w: (c1 - c0) / cols, h: (r1 - r0) / rows };
 }
+
+/** Portion of the reveal window each plate cell's wipe takes. */
+const CELL_WIPE_DUR = 0.4;
 
 export function drawPlate(
   ctx: OffscreenCanvasRenderingContext2D,
   grid: Grid,
   preset: GridPreset,
   placement: PlatePlacement,
-  color = "#000000"
+  color = "#000000",
+  /** 0..1 animation reveal — the plate fills in cell-by-cell ("pixels loading in"). */
+  reveal = 1,
+  /** Seeds the per-cell stagger + wipe direction. */
+  seed = 0
 ): void {
+  if (reveal <= 0) return;
   const rect = plateRect(preset, placement);
   // Overfill by BLEED px on every side. Panels round outward by ~1px to hide seams, so a
   // panel in the plate's edge column would otherwise poke a thin sliver past the plate.
@@ -63,8 +79,33 @@ export function drawPlate(
   const h = rect.h * grid.height + BLEED * 2;
 
   ctx.fillStyle = color;
+
+  if (reveal < 1) {
+    // Build-in: each plate cell wipes from a seeded direction on a seeded stagger.
+    const { c0, c1, r0, r1 } = plateCells(preset, placement);
+    const rng = makeRng(deriveSeed(seed, "plate-anim"));
+    for (let row = r0; row < r1; row++) {
+      for (let col = c0; col < c1; col++) {
+        const stagger = rng() * (1 - CELL_WIPE_DUR);
+        const dir = Math.floor(rng() * 4) as WipeDirection;
+        const p = easeOutCubic(
+          Math.min(1, Math.max(0, (reveal - stagger) / CELL_WIPE_DUR))
+        );
+        if (p <= 0) continue;
+        const cx = Math.floor((col / grid.spec.cols) * grid.width) - 1;
+        const cy = Math.floor((row / grid.spec.rows) * grid.height) - 1;
+        const cw = Math.ceil(grid.cellW) + 2;
+        const ch = Math.ceil(grid.cellH) + 2;
+        ctx.fillRect(...wipeRect(cx, cy, cw, ch, dir, p));
+      }
+    }
+    return;
+  }
+
+  // Static: one solid block + keyline (contrasting the fill so it reads on either theme).
   ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = "rgba(255,255,255,0.16)";
+  ctx.strokeStyle =
+    color.toLowerCase() === "#ffffff" ? "rgba(0,0,0,0.16)" : "rgba(255,255,255,0.16)";
   ctx.lineWidth = 1;
   ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 }

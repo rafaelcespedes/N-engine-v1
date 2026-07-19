@@ -17,7 +17,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_PARAMS } from "@/lib/params";
 import type { Params, PlatePlacement } from "@/lib/params";
 import { previewDims } from "@/lib/grid";
-import { plateRect } from "@/lib/layers/plate";
 import { DEFAULT_PLACEHOLDER, randomPlaceholder } from "@/lib/placeholders";
 import type { Placeholder } from "@/lib/placeholders";
 import { randomConfig } from "@/lib/randomize";
@@ -38,23 +37,6 @@ function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/**
- * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
- * plates need correcting: the centered plate on 7x4 is very wide/short (logo renders
- * huge → 50%), and the right plate on portrait grids is narrow/tall (logo + text render
- * tiny → both +30%).
- */
-function plateScales(
-  grid: Params["grid"],
-  placement: PlatePlacement
-): { logo: number; text: number } {
-  if (grid === "7x4" && placement === "center") return { logo: 0.5, text: 1 };
-  // Right-half plates are narrow everywhere -> content up 30%.
-  if (placement === "right") return { logo: 1.3, text: 1.3 };
-  // 4x5 plates are narrow at every placement -> up 20% (right handled above).
-  if (grid === "4x5") return { logo: 1.2, text: 1.2 };
-  return { logo: 1, text: 1 };
-}
 
 function useContainedSize(ratioW: number, ratioH: number) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -129,8 +111,6 @@ export default function EmbedPage() {
     });
   }, [placeholder.id]);
 
-  const copyRect = params.plate ? plateRect(params.grid, params.placement) : null;
-
   return (
     // #131313 matches the article page background, so the area around the dotted
     // container reads as part of the article rather than part of the widget.
@@ -153,16 +133,6 @@ export default function EmbedPage() {
         >
           <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-          {copyRect && (
-            <EmbedPlateCopy
-              rect={copyRect}
-              title={params.plateTitle}
-              body={params.plateBody}
-              logo={params.plateLogo}
-              logoPos={params.plateLogoPos}
-              scales={plateScales(params.grid, params.placement)}
-            />
-          )}
 
           <div
             className={`pointer-events-none absolute inset-0 overflow-hidden bg-[#242424] transition-opacity duration-300 ${
@@ -197,85 +167,5 @@ export default function EmbedPage() {
         </p>
       </div>
     </main>
-  );
-}
-
-/** Trimmed copy of the app's plate overlay — copy + logo at opposite ends. */
-function EmbedPlateCopy({
-  rect,
-  title,
-  body,
-  logo,
-  logoPos,
-  scales = { logo: 1, text: 1 },
-}: {
-  rect: { x: number; y: number; w: number; h: number };
-  title: string;
-  body: string;
-  logo: boolean;
-  logoPos: "top" | "bottom";
-  /** Per-plate-proportion corrections — see plateScales. */
-  scales?: { logo: number; text: number };
-}) {
-  const copyBlock = (
-    <div className="w-full">
-      {title && (
-        <div
-          className="font-display font-normal leading-[0.9] text-white"
-          style={{ fontSize: `min(${15 * scales.text}cqw, ${22 * scales.text}cqh)` }}
-        >
-          {title}
-        </div>
-      )}
-      {body && (
-        <div
-          className="mt-[2.52%] font-sans leading-[1.3] text-white/75"
-          style={{ fontSize: `min(${6 * scales.text}cqw, ${9 * scales.text}cqh)` }}
-        >
-          {body}
-        </div>
-      )}
-    </div>
-  );
-  const logoBlock = logo ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/nengine-mark.svg"
-      alt=""
-      className={logoPos === "bottom" ? "self-end" : ""}
-      style={{ width: `${15 * scales.logo}cqw` }}
-    />
-  ) : null;
-
-  return (
-    <div
-      className={`pointer-events-none absolute flex flex-col items-start overflow-hidden ${
-        logo ? "justify-between" : "justify-end"
-      }`}
-      style={{
-        left: `${rect.x * 100}%`,
-        top: `${rect.y * 100}%`,
-        width: `${rect.w * 100}%`,
-        height: `${rect.h * 100}%`,
-        containerType: "size",
-        padding: "4%",
-      }}
-    >
-      {logo ? (
-        logoPos === "top" ? (
-          <>
-            {logoBlock}
-            {copyBlock}
-          </>
-        ) : (
-          <>
-            {copyBlock}
-            {logoBlock}
-          </>
-        )
-      ) : (
-        copyBlock
-      )}
-    </div>
   );
 }
