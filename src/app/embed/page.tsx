@@ -113,20 +113,20 @@ export default function EmbedPage() {
   const copyRect = params.plate ? plateRect(params.grid, params.placement) : null;
 
   return (
-    <main
-      className="flex h-dvh w-full flex-col overflow-hidden rounded-[16px] text-white"
-      style={{
-        backgroundColor: "#1e1e1e",
-        backgroundImage:
-          "radial-gradient(rgba(255,255,255,0.07) 1.1px, transparent 1.1px)",
-        backgroundSize: "16px 16px",
-        backgroundPosition: "center",
-      }}
-    >
+    // #131313 matches the article page background, so the area around the dotted
+    // container reads as part of the article rather than part of the widget.
+    <main className="flex h-dvh w-full flex-col gap-3 bg-[#131313] text-white">
       <div
         ref={stageRef}
-        className="relative flex min-h-0 flex-1 items-center justify-center"
-        style={{ padding: PAD }}
+        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[16px] border border-hair"
+        style={{
+          padding: PAD,
+          backgroundColor: "#1e1e1e",
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.07) 1.1px, transparent 1.1px)",
+          backgroundSize: "16px 16px",
+          backgroundPosition: "center",
+        }}
       >
         <div
           className="relative shadow-[0_12px_44px_rgba(0,0,0,0.5)]"
@@ -154,7 +154,8 @@ export default function EmbedPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2.5" style={{ padding: `0 ${PAD}px ${PAD - 4}px` }}>
+      {/* Below the dotted container, on the page background. */}
+      <div className="flex flex-col gap-2.5 pb-1">
         <button
           type="button"
           onClick={randomize}
