@@ -118,6 +118,7 @@ export default function EmbedPage() {
       return {
         ...p,
         ...cfg,
+        gridLines: true, // the widget always shows the grid
         plate: true,
         placement: pick(placements),
         plateTitle: pair.title,
