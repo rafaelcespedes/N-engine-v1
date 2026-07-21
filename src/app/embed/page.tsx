@@ -177,7 +177,7 @@ export default function EmbedPage() {
         className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[16px]"
         style={{
           padding: PAD,
-          // No fill — the dots sit straight on the host page's background.
+          backgroundColor: "#1e1e1e",
           backgroundImage:
             "radial-gradient(rgba(255,255,255,0.07) 1.1px, transparent 1.1px)",
           backgroundSize: "16px 16px",
