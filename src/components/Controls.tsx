@@ -170,11 +170,7 @@ export function Controls({
         />
       </Feature>
 
-      <Feature
-        title="Diagonals"
-        active={params.diagonals}
-        onToggle={(v) => update({ diagonals: v })}
-      />
+      {/* Diagonals: no control — a widget-only element, toggled via params. */}
 
       <Feature
         title="Slice shift"
