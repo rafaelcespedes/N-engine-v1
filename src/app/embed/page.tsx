@@ -53,7 +53,7 @@ const COPY_POOL = [
  */
 const HEADLINE_POOL = [
   "A brand that draws itself",
-  "Constraints, not templates",
+  "Every format, one system",
   "Every output, on brand",
   "Rules that keep producing",
   "One formula, endless output",
