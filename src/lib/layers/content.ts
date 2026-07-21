@@ -43,7 +43,7 @@ const WIDESCREEN_SIDE_SCALE = 0.8;
 /** Title line height. */
 const TITLE_LINE_HEIGHT = 0.864;
 /** Body line height. */
-const BODY_LINE_HEIGHT = 1.196;
+const BODY_LINE_HEIGHT = 1.248;
 /** Gap between title and body, as a fraction of plate width. */
 const COPY_GAP = 0.02268;
 
