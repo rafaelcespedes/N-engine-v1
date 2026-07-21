@@ -21,7 +21,7 @@ import type {
   PlatePlacement,
   PlateTheme,
 } from "@/lib/params";
-import { GRID_PRESETS, DEFAULT_GRID_FOR } from "@/lib/grid";
+import { GRID_PRESETS, DEFAULT_GRID_FOR, allowsCenterPlate } from "@/lib/grid";
 import { PANEL_HEX } from "@/lib/palette";
 import { PLACEHOLDERS, type Placeholder } from "@/lib/placeholders";
 import { Section, Feature, Segmented, Slider, ScrollArea } from "./ui";
@@ -59,8 +59,8 @@ export function Controls({
     update({
       grid,
       aspect: GRID_PRESETS[grid].aspect,
-      // 5x3 can't pair with a centered plate — bump it to left.
-      ...(grid === "5x3" && params.placement === "center"
+      // Some grids don't offer a centered plate — bump it to left.
+      ...(!allowsCenterPlate(grid) && params.placement === "center"
         ? { placement: "left" as PlatePlacement }
         : {}),
     });
@@ -203,7 +203,7 @@ export function Controls({
           <span className="text-xs text-white/70">Placement</span>
           <div className="flex gap-1.5">
             {(["left", "right", "center"] as PlatePlacement[]).map((pl) => {
-              const disabled = pl === "center" && params.grid === "5x3";
+              const disabled = pl === "center" && !allowsCenterPlate(params.grid);
               return (
                 <PlacementButton
                   key={pl}
@@ -509,7 +509,7 @@ function PlacementButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      title={disabled ? `${placement} (unavailable for 5x3)` : placement}
+      title={disabled ? `${placement} (unavailable for this grid)` : placement}
       className={`flex-1 rounded-md border p-2 transition-colors ${
         disabled
           ? "cursor-not-allowed border-hair opacity-30"

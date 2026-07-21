@@ -112,3 +112,14 @@ export function cellAt(grid: Grid, col: number, row: number): Cell | undefined {
   }
   return grid.cells[row * grid.spec.cols + col];
 }
+
+/**
+ * Grids that don't support a centered plate. Their centered block lands at proportions
+ * that read badly — too wide and short on the 16:9 grids, too narrow on 4x5 — so the
+ * placement is withheld rather than shipped as a bad option.
+ */
+const NO_CENTER_PLATE: GridPreset[] = ["7x4", "5x3", "4x5"];
+
+export function allowsCenterPlate(grid: GridPreset): boolean {
+  return !NO_CENTER_PLATE.includes(grid);
+}

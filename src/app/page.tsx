@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_PARAMS } from "@/lib/params";
 import type { Params } from "@/lib/params";
-import { previewDims } from "@/lib/grid";
+import { allowsCenterPlate, previewDims } from "@/lib/grid";
 import { DEFAULT_PLACEHOLDER, randomPlaceholder } from "@/lib/placeholders";
 import type { Placeholder } from "@/lib/placeholders";
 import { randomConfig } from "@/lib/randomize";
@@ -83,8 +83,10 @@ export default function Page() {
     setPlaceholder(randomPlaceholder(placeholder.id));
     setParams((p) => {
       const next = { ...p, ...randomConfig() };
-      // 5x3 can't pair with a centered plate — the center block is too wide/short.
-      if (next.grid === "5x3" && next.placement === "center") next.placement = "left";
+      // Some grids don't offer a centered plate — bump those rolls to left.
+      if (!allowsCenterPlate(next.grid) && next.placement === "center") {
+        next.placement = "left";
+      }
       return next;
     });
   }, [placeholder.id]);
