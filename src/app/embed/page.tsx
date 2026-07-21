@@ -15,7 +15,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_PARAMS } from "@/lib/params";
-import type { PanelColor, Params, PlatePlacement } from "@/lib/params";
+import type { GridPreset, PanelColor, Params, PlatePlacement } from "@/lib/params";
 import { previewDims } from "@/lib/grid";
 import { DEFAULT_PLACEHOLDER, randomPlaceholder } from "@/lib/placeholders";
 import type { Placeholder } from "@/lib/placeholders";
@@ -69,6 +69,13 @@ const HEADLINE_POOL = [
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+/**
+ * Grids the widget never rolls a centered plate on — both 16:9 grids and 4x5. (The app
+ * disallows 5x3 center outright; the others just read poorly at article size.) Center
+ * still rolls on 5x5 and 5x6.
+ */
+const NO_CENTER_PLATE: GridPreset[] = ["7x4", "5x3", "4x5"];
 
 
 function useContainedSize(ratioW: number, ratioH: number) {
@@ -127,8 +134,9 @@ export default function EmbedPage() {
     setPlaceholder(randomPlaceholder(placeholder.id));
     setParams((p) => {
       const cfg = randomConfig();
-      const placements: PlatePlacement[] =
-        cfg.grid === "5x3" ? ["left", "right"] : ["left", "right", "center"];
+      const placements: PlatePlacement[] = NO_CENTER_PLATE.includes(cfg.grid)
+        ? ["left", "right"]
+        : ["left", "right", "center"];
       const pair = pick(COPY_POOL);
       const titleOnly = Math.random() < 0.5;
       // Black panels disappear into the artwork, so the widget leans on them ~30%
