@@ -70,6 +70,9 @@ function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+/** Share of widget rolls that use black panels (the app's own randomizer sits at 0.5). */
+const BLACK_PANEL_SHARE = 0.2;
+
 
 function useContainedSize(ratioW: number, ratioH: number) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -132,13 +135,13 @@ export default function EmbedPage() {
         : ["left", "right"];
       const pair = pick(COPY_POOL);
       const titleOnly = Math.random() < 0.5;
-      // Black panels disappear into the artwork, so the widget leans on them ~30%
-      // less than the app's randomizer does: re-roll a black slot to white 30% of
-      // the time, taking black from ~50% of rolls to ~35%.
-      const panelColors: PanelColor[] =
-        cfg.panelColors[0] === "black" && Math.random() < 0.3
-          ? ["white", ...cfg.panelColors.slice(1)]
-          : cfg.panelColors;
+      // Black panels disappear into the artwork, so the widget sets their share
+      // directly rather than taking the app's 50/50 mono roll. Slot 2 (an accent,
+      // never black) is left as rolled.
+      const panelColors: PanelColor[] = [
+        Math.random() < BLACK_PANEL_SHARE ? "black" : "white",
+        ...cfg.panelColors.slice(1),
+      ];
       // When black survives the re-roll, thin the field too — black cells read as
       // holes punched in the artwork, so fewer of them go a long way.
       const panelDensity =
