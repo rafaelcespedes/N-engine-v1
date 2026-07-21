@@ -167,9 +167,11 @@ export default function EmbedPage() {
   }, [placeholder.id]);
 
   return (
-    // #131313 matches the article page background, so the area around the dotted
-    // container reads as part of the article rather than part of the widget.
-    <main className="flex h-dvh w-full flex-col gap-3 bg-[#131313] text-white">
+    // Everything outside the dotted box is transparent so the host page shows through
+    // (the gap above the button, and the stage's rounded corners). globals.css paints
+    // html/body #0A0A0A, which would otherwise sit between us and the article.
+    <main className="flex h-dvh w-full flex-col gap-3 text-white">
+      <style>{`html, body { background: transparent; }`}</style>
       <div
         ref={stageRef}
         className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[16px]"
