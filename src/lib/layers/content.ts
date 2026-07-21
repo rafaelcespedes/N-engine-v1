@@ -34,19 +34,27 @@ export interface ContentParams {
 /** Aspect of nengine-mark.svg (viewBox 915×1057). */
 const LOGO_ASPECT = 1057 / 915;
 
+/** Display-face tracking, matching the .font-display rule in globals.css. */
+const TITLE_TRACKING = "-2px";
+
 /**
  * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
  * plates need correcting: the centered plate on 7x4 is very wide/short (logo renders
- * huge → 50%), and right-half plates are narrow everywhere (content up 30%); 4x5 is a
- * narrow grid at every placement (up 20%).
+ * huge → 50%), right-half plates on the square/landscape grids are narrow (content up
+ * 30%), and the 4x5 centered plate is narrow too (up 20%). The portrait grids' left/
+ * right plates are bottom-anchored blocks that are already wide — they take no
+ * correction (see PORTRAIT_SIDE_BLOCK in layers/plate.ts).
  */
 export function plateScales(
   grid: GridPreset,
   placement: PlatePlacement
 ): { logo: number; text: number } {
   if (grid === "7x4" && placement === "center") return { logo: 0.5, text: 1 };
+  const portraitSideBlock =
+    (grid === "5x6" || grid === "4x5") && placement !== "center";
+  if (portraitSideBlock) return { logo: 1, text: 1 };
+  if (grid === "4x5") return { logo: 1.2, text: 1.2 }; // centered plate only
   if (placement === "right") return { logo: 1.3, text: 1.3 };
-  if (grid === "4x5") return { logo: 1.2, text: 1.2 };
   return { logo: 1, text: 1 };
 }
 
@@ -128,17 +136,20 @@ export function drawContent(
   ctx.globalAlpha *= progress;
   ctx.textBaseline = "alphabetic";
 
-  // Measure the copy block.
+  // Measure the copy block. The display face is tracked -2px (mirrors the .font-display
+  // rule in globals.css); set it before measuring so wrapping accounts for it.
   const titleFont = `400 ${titleFS}px ${assets.headlineFamily}`;
   const bodyFont = `400 ${bodyFS}px ${assets.bodyFamily}`;
   let titleLines: string[] = [];
   let bodyLines: string[] = [];
   if (content.title) {
     ctx.font = titleFont;
+    ctx.letterSpacing = TITLE_TRACKING;
     titleLines = wrap(ctx, content.title, innerW);
   }
   if (content.body) {
     ctx.font = bodyFont;
+    ctx.letterSpacing = "0px";
     bodyLines = wrap(ctx, content.body, innerW);
   }
   const titleH = titleLines.length * titleFS * 0.9;
@@ -156,11 +167,13 @@ export function drawContent(
 
   if (titleLines.length) {
     ctx.font = titleFont;
+    ctx.letterSpacing = TITLE_TRACKING;
     ctx.fillStyle = titleColor;
     drawLines(ctx, titleLines, innerX, copyTop, titleFS, 0.9);
   }
   if (bodyLines.length) {
     ctx.font = bodyFont;
+    ctx.letterSpacing = "0px";
     ctx.fillStyle = bodyColor;
     drawLines(
       ctx,

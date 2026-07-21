@@ -24,11 +24,27 @@ export interface Rect {
   h: number;
 }
 
+/**
+ * Left/right plate size for the portrait grids, in cells. These don't run full height
+ * like the landscape/square grids — they're a fixed block flushed to the bottom corner.
+ */
+const PORTRAIT_SIDE_BLOCK: Partial<Record<GridPreset, { w: number; h: number }>> = {
+  "5x6": { w: 3, h: 4 },
+  "4x5": { w: 3, h: 3 },
+};
+
 /** Plate block in cell indices [c0,c1) × [r0,r1). */
 export function plateCells(preset: GridPreset, placement: PlatePlacement) {
   const { cols, rows } = GRID_PRESETS[preset];
+  const block = placement !== "center" ? PORTRAIT_SIDE_BLOCK[preset] : undefined;
   let c0: number, c1: number, r0: number, r1: number;
-  if (placement === "left") {
+  if (block) {
+    // Bottom-anchored block, flushed to its side.
+    c0 = placement === "left" ? 0 : cols - block.w;
+    c1 = c0 + block.w;
+    r0 = rows - block.h;
+    r1 = rows;
+  } else if (placement === "left") {
     c0 = 0;
     c1 = Math.round(cols / 2);
     r0 = 0;

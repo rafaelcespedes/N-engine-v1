@@ -48,6 +48,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Bricolage is the display face — always set tight. The canvas title applies the
+   same -2px in layers/content.ts, so DOM and render stay in sync. Excludes the copy
+   input, where -2px at 14px would collapse the word spaces. */
+.font-display:not(input):not(textarea) {
+  letter-spacing: -2px;
+}
+
 /* Range inputs: thin, precise, no chrome accent color. */
 input[type="range"] {
   -webkit-appearance: none;
