@@ -24,13 +24,26 @@ import { useCompositor } from "@/components/useCompositor";
 
 const PAD = 20;
 
-/** Placeholder copy pairs the widget's randomizer cycles through. */
+/**
+ * Placeholder copy the widget's randomizer cycles through — written about what the tool
+ * does, so the demo reads like the system describing itself. Half the rolls drop the
+ * body and run title-only, so titles double as standalone statements.
+ */
 const COPY_POOL = [
   { title: "The New Standard", body: "A composable grid system for generative brand art." },
   { title: "Signal, Not Noise", body: "Constraints do the composing — the system does the rest." },
   { title: "Made to Morph", body: "One identity, endless permutations." },
   { title: "Guardrails On", body: "On-brand by construction, not by review." },
   { title: "Press Play", body: "A brand system that ships its own assets." },
+  { title: "Rules, Not Files", body: "The system outlives the artifact." },
+  { title: "Set the Variables", body: "Fixed grid, free composition." },
+  { title: "Infinite Editions", body: "Every render is new. None go off-brand." },
+  { title: "Built to Repeat", body: "Consistency without the copy-paste." },
+  { title: "Fewer Decisions", body: "The interesting choices, made once." },
+  { title: "Narrow Inputs", body: "A small set of controls, a wide range of outputs." },
+  { title: "Ships Itself", body: "Launch assets without a designer in the loop." },
+  { title: "One Formula", body: "A brand that draws its own artwork." },
+  { title: "Nothing Spare", body: "If it doesn't need to move, it isn't a control." },
 ];
 
 function pick<T>(arr: T[]): T {
@@ -104,7 +117,9 @@ export default function EmbedPage() {
         plate: true,
         placement: pick(placements),
         plateTitle: pair.title,
-        plateBody: pair.body,
+        // Half the rolls are title-only. The content layer already lays out a
+        // title with no body (it just sits flush to the bottom of the plate).
+        plateBody: Math.random() < 0.5 ? "" : pair.body,
         plateLogo: Math.random() < 0.85,
         // Half the rolls play the build-in animation (plays once, then holds).
         animate: Math.random() < 0.5,
