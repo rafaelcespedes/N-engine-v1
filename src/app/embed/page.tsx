@@ -7,7 +7,7 @@
  * main app's randomizer, this one always rolls Content too — placeholder copy from a
  * small pool — so every roll shows the full system. Fully fluid: the artboard is
  * contained within whatever size the iframe gives us, and the outer container has
- * 16px rounded corners.
+ * 12px rounded corners.
  *
  * Deliberately self-contained (small local copies of the contain/copy-overlay helpers)
  * so it only depends on the committed lib APIs.
@@ -171,7 +171,7 @@ export default function EmbedPage() {
     // darker band shows between them. The 16px corners live here rather than on the
     // stage — with the gap matching, the stage's own corners wouldn't be visible.
     // html/body stay transparent so the host page shows at those rounded corners.
-    <main className="flex h-dvh w-full flex-col overflow-hidden rounded-[16px] bg-[#1e1e1e] text-white">
+    <main className="flex h-dvh w-full flex-col overflow-hidden rounded-[12px] bg-[#1e1e1e] text-white">
       <style>{`html, body { background: transparent; }`}</style>
       <div
         ref={stageRef}
@@ -206,7 +206,7 @@ export default function EmbedPage() {
       <button
         type="button"
         onClick={randomize}
-        className="w-full rounded-[16px] border border-hair bg-white/5 px-4 py-2.5 text-[0.9rem] text-white/80 transition-colors hover:bg-white/10"
+        className="w-full rounded-[12px] border border-hair bg-white/5 px-4 py-2.5 text-[0.9rem] text-white/80 transition-colors hover:bg-white/10"
       >
         ↻ Generate new artifact
       </button>
