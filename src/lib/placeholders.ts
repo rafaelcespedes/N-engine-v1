@@ -34,6 +34,21 @@ export const PLACEHOLDERS: Placeholder[] = [
   ph("data", "Data"),
   ph("eye", "Eye"),
   ph("graphs", "Graphs"),
+  ph("portrait", "Portrait"),
+  ph("cubes", "Cubes"),
+  ph("dashboard", "Dashboard"),
+  ph("landscape", "Landscape"),
+  ph("ethereal", "Ethereal"),
+  ph("orbs", "Orbs"),
+  ph("gathering", "Gathering"),
+  ph("iris", "Iris"),
+  ph("lens", "Lens"),
+  ph("beam", "Beam"),
+  ph("signal", "Signal"),
+  ph("topographic", "Topographic"),
+  ph("ridges", "Ridges"),
+  ph("venn", "Venn"),
+  ph("eclipse", "Eclipse"),
 ];
 
 /** The one loaded on first paint. */
