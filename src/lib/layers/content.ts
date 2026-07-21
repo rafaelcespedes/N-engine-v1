@@ -52,19 +52,20 @@ export function plateScales(
   placement: PlatePlacement
 ): { logo: number; text: number } {
   if (grid === "7x4" && placement === "center") return { logo: 0.5, text: 1 };
+
+  // 16:9 side plates are the same narrow block on both sides: boosted for that
+  // narrowness, then pulled back 20% because they read oversized on a wide canvas.
+  if ((grid === "7x4" || grid === "5x3") && placement !== "center") {
+    const s = 1.3 * WIDESCREEN_SIDE_SCALE;
+    return { logo: s, text: s };
+  }
+
+  // Remaining explicit side blocks are deliberately wide — no correction.
   if (sideBlock(grid, placement)) return { logo: 1, text: 1 };
 
-  let base: { logo: number; text: number };
-  if (grid === "4x5") base = { logo: 1.2, text: 1.2 }; // centered plate only
-  else if (placement === "right") base = { logo: 1.3, text: 1.3 };
-  else base = { logo: 1, text: 1 };
-
-  // The 16:9 side plates read oversized against the wide canvas — pull the whole
-  // content block back 20%, keeping the right plate's relative boost.
-  if ((grid === "7x4" || grid === "5x3") && placement !== "center") {
-    return { logo: base.logo * WIDESCREEN_SIDE_SCALE, text: base.text * WIDESCREEN_SIDE_SCALE };
-  }
-  return base;
+  if (grid === "4x5") return { logo: 1.2, text: 1.2 }; // centered plate only
+  if (placement === "right") return { logo: 1.3, text: 1.3 };
+  return { logo: 1, text: 1 };
 }
 
 /** Greedy word wrap against the current ctx.font. */

@@ -33,9 +33,9 @@ interface SideBlock {
 }
 
 /**
- * Left/right plates that are a fixed block rather than a full-height half. Anything
- * listed here is sized deliberately, so it also opts out of the plateScales correction
- * (see `sideBlock` usage in layers/content.ts). Unlisted combos keep the default half.
+ * Left/right plates sized explicitly rather than by the default half-split. A block
+ * whose `h` equals the grid's row count still runs full height — it just sets the
+ * width. Unlisted combos keep the default half.
  */
 const SIDE_BLOCKS: Partial<
   Record<GridPreset, Partial<Record<"left" | "right", SideBlock>>>
@@ -43,6 +43,9 @@ const SIDE_BLOCKS: Partial<
   "5x6": { left: { w: 3, h: 4, vAlign: "bottom" }, right: { w: 3, h: 4, vAlign: "bottom" } },
   "4x5": { left: { w: 3, h: 3, vAlign: "center" }, right: { w: 3, h: 3, vAlign: "center" } },
   "5x5": { right: { w: 3, h: 3, vAlign: "center" } },
+  // 16:9 — full height, narrowed so left mirrors right.
+  "7x4": { left: { w: 3, h: 4, vAlign: "bottom" } },
+  "5x3": { left: { w: 2, h: 3, vAlign: "bottom" } },
 };
 
 /** The fixed block for this combo, or undefined when it uses the default half. */
