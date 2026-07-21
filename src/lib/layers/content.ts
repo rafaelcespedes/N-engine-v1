@@ -37,6 +37,9 @@ const LOGO_ASPECT = 1057 / 915;
 /** Display-face tracking, matching the .font-display rule in globals.css. */
 const TITLE_TRACKING = "-2px";
 
+/** Left/right plates on the 16:9 grids carry their content 20% smaller. */
+const WIDESCREEN_SIDE_SCALE = 0.8;
+
 /**
  * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
  * plates need correcting: the centered plate on 7x4 is very wide/short (logo renders
@@ -53,9 +56,18 @@ export function plateScales(
   const portraitSideBlock =
     (grid === "5x6" || grid === "4x5") && placement !== "center";
   if (portraitSideBlock) return { logo: 1, text: 1 };
-  if (grid === "4x5") return { logo: 1.2, text: 1.2 }; // centered plate only
-  if (placement === "right") return { logo: 1.3, text: 1.3 };
-  return { logo: 1, text: 1 };
+
+  let base: { logo: number; text: number };
+  if (grid === "4x5") base = { logo: 1.2, text: 1.2 }; // centered plate only
+  else if (placement === "right") base = { logo: 1.3, text: 1.3 };
+  else base = { logo: 1, text: 1 };
+
+  // The 16:9 side plates read oversized against the wide canvas — pull the whole
+  // content block back 20%, keeping the right plate's relative boost.
+  if ((grid === "7x4" || grid === "5x3") && placement !== "center") {
+    return { logo: base.logo * WIDESCREEN_SIDE_SCALE, text: base.text * WIDESCREEN_SIDE_SCALE };
+  }
+  return base;
 }
 
 /** Greedy word wrap against the current ctx.font. */
