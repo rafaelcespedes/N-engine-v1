@@ -167,17 +167,17 @@ export default function EmbedPage() {
   }, [placeholder.id]);
 
   return (
-    // Everything outside the dotted box is transparent so the host page shows through
-    // (the gap above the button, and the stage's rounded corners). globals.css paints
-    // html/body #0A0A0A, which would otherwise sit between us and the article.
-    <main className="flex h-dvh w-full flex-col gap-3 text-white">
+    // One continuous #1e1e1e surface: dotted stage, gap, and button all share it, so no
+    // darker band shows between them. The 16px corners live here rather than on the
+    // stage — with the gap matching, the stage's own corners wouldn't be visible.
+    // html/body stay transparent so the host page shows at those rounded corners.
+    <main className="flex h-dvh w-full flex-col gap-3 overflow-hidden rounded-[16px] bg-[#1e1e1e] text-white">
       <style>{`html, body { background: transparent; }`}</style>
       <div
         ref={stageRef}
-        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-[16px]"
+        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden"
         style={{
           padding: PAD,
-          backgroundColor: "#1e1e1e",
           backgroundImage:
             "radial-gradient(rgba(255,255,255,0.07) 1.1px, transparent 1.1px)",
           backgroundSize: "16px 16px",
