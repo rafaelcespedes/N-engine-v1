@@ -1,7 +1,7 @@
 /**
  * The animation. One fixed, restrained build-in — no timeline, no user knobs.
  *
- * Plays ONCE (~2.8s) and holds: grid lines fade in, panels wipe in cell-by-cell from
+ * Plays ONCE (~2.4s) and holds: grid lines fade in, panels wipe in cell-by-cell from
  * seeded directions, slices slide out to their offsets, the plate fills in cell-by-cell
  * the same way ("pixels loading in"), then the copy/logo fade on top. Replay is user-
  * triggered (Space).
@@ -10,7 +10,7 @@
  * which reproduces the static render exactly.
  */
 
-export const ANIM_MS = 2800;
+export const ANIM_MS = 2380;
 /** Extra hold recorded at the end of a video export. */
 export const VIDEO_TAIL_MS = 600;
 
