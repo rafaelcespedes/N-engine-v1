@@ -175,7 +175,10 @@ export default function EmbedPage() {
       <style>{`html, body { background: transparent; }`}</style>
       <div
         ref={stageRef}
-        className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden"
+        // No overflow-hidden here: it would clip the artboard's drop shadow at the
+        // stage's bottom edge (worst on square/portrait, which fill the height). The
+        // outer card clips the dotted background at the rounded corners instead.
+        className="relative flex min-h-0 flex-1 items-center justify-center"
         style={{
           padding: PAD,
           backgroundImage:
