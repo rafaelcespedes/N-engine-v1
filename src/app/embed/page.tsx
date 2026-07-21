@@ -208,7 +208,7 @@ export default function EmbedPage() {
         onClick={randomize}
         // Inset by the same PAD the stage uses for the artboard, so the card carries an
         // even frame all the way round (the stage's bottom padding covers the top side).
-        style={{ margin: `0 ${PAD}px ${PAD}px` }}
+        style={{ margin: `10px ${PAD}px ${PAD}px` }}
         className="rounded-[12px] border border-hair bg-white/5 px-4 py-2.5 text-[0.9rem] text-white/80 transition-colors hover:bg-white/10"
       >
         ↻ Generate new artifact
