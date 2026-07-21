@@ -39,7 +39,7 @@ export function phasesAt(t: number): AnimPhases {
     gridAlpha: easeOutCubic(win(t, 0.0, 0.15)),
     panelsReveal: win(t, 0.06, 0.5),
     plateReveal: win(t, 0.38, 0.74),
-    contentProgress: easeOutCubic(win(t, 0.74, 0.92)),
+    contentProgress: easeOutCubic(win(t, 0.74, 0.884)),
   };
 }
 
