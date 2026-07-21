@@ -41,7 +41,7 @@ const SIDE_BLOCKS: Partial<
   Record<GridPreset, Partial<Record<"left" | "right", SideBlock>>>
 > = {
   "5x6": { left: { w: 3, h: 4, vAlign: "bottom" }, right: { w: 3, h: 4, vAlign: "bottom" } },
-  "4x5": { left: { w: 3, h: 3, vAlign: "bottom" }, right: { w: 3, h: 3, vAlign: "bottom" } },
+  "4x5": { left: { w: 3, h: 3, vAlign: "center" }, right: { w: 3, h: 3, vAlign: "center" } },
   "5x5": { right: { w: 3, h: 3, vAlign: "center" } },
 };
 
