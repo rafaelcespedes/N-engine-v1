@@ -35,7 +35,7 @@ export function drawDiagonals(
   const srng = makeRng(deriveSeed(seed, "diagonal-anim"));
 
   ctx.save();
-  ctx.strokeStyle = `rgba(255,255,255,${0.22 * alpha})`;
+  ctx.strokeStyle = `rgba(255,255,255,${0.3 * alpha})`;
   ctx.lineWidth = 1;
   ctx.beginPath();
 
