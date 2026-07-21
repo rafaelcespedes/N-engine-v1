@@ -13,7 +13,7 @@
 
 import type { Grid } from "../grid";
 import type { GridPreset, PlatePlacement, PlateTheme } from "../params";
-import { plateRect } from "./plate";
+import { plateRect, sideBlock } from "./plate";
 
 export interface ContentAssets {
   /** The mark, pre-tinted per theme (white for dark plates, black for light). */
@@ -43,19 +43,16 @@ const WIDESCREEN_SIDE_SCALE = 0.8;
 /**
  * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
  * plates need correcting: the centered plate on 7x4 is very wide/short (logo renders
- * huge → 50%), right-half plates on the square/landscape grids are narrow (content up
- * 30%), and the 4x5 centered plate is narrow too (up 20%). The portrait grids' left/
- * right plates are bottom-anchored blocks that are already wide — they take no
- * correction (see PORTRAIT_SIDE_BLOCK in layers/plate.ts).
+ * huge → 50%), right-half plates are narrow (content up 30%), and the 4x5 centered
+ * plate is narrow too (up 20%). Combos that use an explicit side block (see SIDE_BLOCKS
+ * in layers/plate.ts) are already sized deliberately and take no correction.
  */
 export function plateScales(
   grid: GridPreset,
   placement: PlatePlacement
 ): { logo: number; text: number } {
   if (grid === "7x4" && placement === "center") return { logo: 0.5, text: 1 };
-  const portraitSideBlock =
-    (grid === "5x6" || grid === "4x5") && placement !== "center";
-  if (portraitSideBlock) return { logo: 1, text: 1 };
+  if (sideBlock(grid, placement)) return { logo: 1, text: 1 };
 
   let base: { logo: number; text: number };
   if (grid === "4x5") base = { logo: 1.2, text: 1.2 }; // centered plate only

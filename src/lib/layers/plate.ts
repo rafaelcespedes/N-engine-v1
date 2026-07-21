@@ -24,26 +24,46 @@ export interface Rect {
   h: number;
 }
 
+interface SideBlock {
+  /** Size in cells. */
+  w: number;
+  h: number;
+  /** Where the block sits vertically; horizontally it's always flush to its side. */
+  vAlign: "bottom" | "center";
+}
+
 /**
- * Left/right plate size for the portrait grids, in cells. These don't run full height
- * like the landscape/square grids — they're a fixed block flushed to the bottom corner.
+ * Left/right plates that are a fixed block rather than a full-height half. Anything
+ * listed here is sized deliberately, so it also opts out of the plateScales correction
+ * (see `sideBlock` usage in layers/content.ts). Unlisted combos keep the default half.
  */
-const PORTRAIT_SIDE_BLOCK: Partial<Record<GridPreset, { w: number; h: number }>> = {
-  "5x6": { w: 3, h: 4 },
-  "4x5": { w: 3, h: 3 },
+const SIDE_BLOCKS: Partial<
+  Record<GridPreset, Partial<Record<"left" | "right", SideBlock>>>
+> = {
+  "5x6": { left: { w: 3, h: 4, vAlign: "bottom" }, right: { w: 3, h: 4, vAlign: "bottom" } },
+  "4x5": { left: { w: 3, h: 3, vAlign: "bottom" }, right: { w: 3, h: 3, vAlign: "bottom" } },
+  "5x5": { right: { w: 3, h: 3, vAlign: "center" } },
 };
+
+/** The fixed block for this combo, or undefined when it uses the default half. */
+export function sideBlock(
+  preset: GridPreset,
+  placement: PlatePlacement
+): SideBlock | undefined {
+  if (placement === "center") return undefined;
+  return SIDE_BLOCKS[preset]?.[placement];
+}
 
 /** Plate block in cell indices [c0,c1) × [r0,r1). */
 export function plateCells(preset: GridPreset, placement: PlatePlacement) {
   const { cols, rows } = GRID_PRESETS[preset];
-  const block = placement !== "center" ? PORTRAIT_SIDE_BLOCK[preset] : undefined;
+  const block = sideBlock(preset, placement);
   let c0: number, c1: number, r0: number, r1: number;
   if (block) {
-    // Bottom-anchored block, flushed to its side.
     c0 = placement === "left" ? 0 : cols - block.w;
     c1 = c0 + block.w;
-    r0 = rows - block.h;
-    r1 = rows;
+    r0 = block.vAlign === "center" ? Math.round((rows - block.h) / 2) : rows - block.h;
+    r1 = r0 + block.h;
   } else if (placement === "left") {
     c0 = 0;
     c1 = Math.round(cols / 2);
