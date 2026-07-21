@@ -44,6 +44,13 @@ const COPY_POOL = [
   { title: "Ships Itself", body: "Launch assets without a designer in the loop." },
   { title: "One Formula", body: "A brand that draws its own artwork." },
   { title: "Nothing Spare", body: "If it doesn't need to move, it isn't a control." },
+  { title: "Hands Off", body: "Set the rules once, then let it run." },
+  { title: "Same DNA", body: "Every asset from a single set of rules." },
+  { title: "Range Within Reason", body: "Wide variety, all of it in bounds." },
+  { title: "Draws on Demand", body: "New artwork whenever you need it." },
+  { title: "No Off-Days", body: "The system doesn't have taste lapses." },
+  { title: "Grid as Engine", body: "Structure is what makes it generative." },
+  { title: "Scales Itself", body: "One brand, any volume, no extra hands." },
 ];
 
 /**
@@ -64,6 +71,12 @@ const HEADLINE_POOL = [
   "Composition by constraint",
   "Never off brand by design",
   "Built to keep on building",
+  "The rules do the drawing",
+  "One system, any volume",
+  "Guardrails, not templates",
+  "Designed once, runs forever",
+  "Variety the brand can hold",
+  "The tool is the deliverable",
 ];
 
 function pick<T>(arr: T[]): T {
