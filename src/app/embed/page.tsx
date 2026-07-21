@@ -138,10 +138,15 @@ export default function EmbedPage() {
         cfg.panelColors[0] === "black" && Math.random() < 0.3
           ? ["white", ...cfg.panelColors.slice(1)]
           : cfg.panelColors;
+      // When black survives the re-roll, thin the field too — black cells read as
+      // holes punched in the artwork, so fewer of them go a long way.
+      const panelDensity =
+        panelColors[0] === "black" ? cfg.panelDensity * 0.7 : cfg.panelDensity;
       return {
         ...p,
         ...cfg,
         panelColors,
+        panelDensity,
         gridLines: true, // the widget always shows the grid
         plate: true,
         placement: pick(placements),
