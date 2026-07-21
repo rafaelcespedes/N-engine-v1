@@ -38,11 +38,8 @@ export const PLACEHOLDERS: Placeholder[] = [
   ph("landscape", "Landscape"),
   ph("ethereal", "Ethereal"),
   ph("orbs", "Orbs"),
-  ph("iris", "Iris"),
-  ph("signal", "Signal"),
   ph("topographic", "Topographic"),
   ph("ridges", "Ridges"),
-  ph("venn", "Venn"),
   ph("eclipse", "Eclipse"),
 ];
 
