@@ -182,28 +182,15 @@ export default function EmbedPage() {
         </div>
       </div>
 
-      {/* Below the dotted container, on the page background. */}
-      <div className="flex flex-col gap-2.5 pb-1">
-        <button
-          type="button"
-          onClick={randomize}
-          className="w-full rounded-md border border-hair bg-white/5 px-4 py-2.5 text-[0.9rem] text-white/80 transition-colors hover:bg-white/10"
-        >
-          ↻ Generate new artifact
-        </button>
-        <p className="text-left text-[0.8rem] leading-relaxed text-white/50">
-          This is a lite version of the tool I created. View and test the full version{" "}
-          <a
-            href="https://nengine.rafaelcespedes.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white/70 underline underline-offset-2 transition-colors hover:text-white"
-          >
-            here
-          </a>
-          .
-        </p>
-      </div>
+      {/* Below the dotted container, on the page background. The caption lives in the
+          article itself (a figcaption), so the widget doesn't carry one. */}
+      <button
+        type="button"
+        onClick={randomize}
+        className="w-full rounded-md border border-hair bg-white/5 px-4 py-2.5 text-[0.9rem] text-white/80 transition-colors hover:bg-white/10"
+      >
+        ↻ Generate new artifact
+      </button>
     </main>
   );
 }
