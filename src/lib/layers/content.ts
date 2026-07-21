@@ -5,8 +5,8 @@
  * shipped without the text. Drawing it here makes the canvas the single source of
  * truth — what you see is exactly what exports.
  *
- * Layout mirrors the old CSS overlay: 4%-of-width padding, title min(15%w, 22%h),
- * body min(6%w, 9%h), title line-height 0.9, body 1.3, gap 2.52%w; logo 15%w wide,
+ * Layout: 4%-of-width padding, title min(15%w, 22%h), body min(6%w, 9%h), line
+ * heights and the title-to-body gap from the constants below; logo 15%w wide,
  * copy and logo at opposite ends of the plate. `plateScales` corrects extreme plate
  * proportions (wide/short and narrow/tall) exactly as before.
  */
@@ -39,6 +39,13 @@ const TITLE_TRACKING = "-2px";
 
 /** Left/right plates on the 16:9 grids carry their content 20% smaller. */
 const WIDESCREEN_SIDE_SCALE = 0.8;
+
+/** Title line height. */
+const TITLE_LINE_HEIGHT = 0.864;
+/** Body line height. */
+const BODY_LINE_HEIGHT = 1.196;
+/** Gap between title and body, as a fraction of plate width. */
+const COPY_GAP = 0.02268;
 
 /**
  * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
@@ -139,7 +146,7 @@ export function drawContent(
 
   const titleFS = Math.min(0.15 * w, 0.22 * h) * scales.text;
   const bodyFS = Math.min(0.06 * w, 0.09 * h) * scales.text;
-  const gap = 0.0252 * w;
+  const gap = COPY_GAP * w;
 
   // Pure fade — the text appears on top once the plate has finished filling in.
   ctx.save();
@@ -162,8 +169,8 @@ export function drawContent(
     ctx.letterSpacing = "0px";
     bodyLines = wrap(ctx, content.body, innerW);
   }
-  const titleH = titleLines.length * titleFS * 0.9;
-  const bodyH = bodyLines.length * bodyFS * 1.3;
+  const titleH = titleLines.length * titleFS * TITLE_LINE_HEIGHT;
+  const bodyH = bodyLines.length * bodyFS * BODY_LINE_HEIGHT;
   const copyH =
     titleH + (titleLines.length && bodyLines.length ? gap : 0) + bodyH;
 
@@ -179,7 +186,7 @@ export function drawContent(
     ctx.font = titleFont;
     ctx.letterSpacing = TITLE_TRACKING;
     ctx.fillStyle = titleColor;
-    drawLines(ctx, titleLines, innerX, copyTop, titleFS, 0.9);
+    drawLines(ctx, titleLines, innerX, copyTop, titleFS, TITLE_LINE_HEIGHT);
   }
   if (bodyLines.length) {
     ctx.font = bodyFont;
@@ -191,7 +198,7 @@ export function drawContent(
       innerX,
       copyTop + titleH + (titleLines.length ? gap : 0),
       bodyFS,
-      1.3
+      BODY_LINE_HEIGHT
     );
   }
 
