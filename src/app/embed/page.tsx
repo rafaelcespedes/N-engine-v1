@@ -15,7 +15,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_PARAMS } from "@/lib/params";
-import type { Params, PlatePlacement } from "@/lib/params";
+import type { PanelColor, Params, PlatePlacement } from "@/lib/params";
 import { previewDims } from "@/lib/grid";
 import { DEFAULT_PLACEHOLDER, randomPlaceholder } from "@/lib/placeholders";
 import type { Placeholder } from "@/lib/placeholders";
@@ -131,9 +131,17 @@ export default function EmbedPage() {
         cfg.grid === "5x3" ? ["left", "right"] : ["left", "right", "center"];
       const pair = pick(COPY_POOL);
       const titleOnly = Math.random() < 0.5;
+      // Black panels disappear into the artwork, so the widget leans on them ~30%
+      // less than the app's randomizer does: re-roll a black slot to white 30% of
+      // the time, taking black from ~50% of rolls to ~35%.
+      const panelColors: PanelColor[] =
+        cfg.panelColors[0] === "black" && Math.random() < 0.3
+          ? ["white", ...cfg.panelColors.slice(1)]
+          : cfg.panelColors;
       return {
         ...p,
         ...cfg,
+        panelColors,
         gridLines: true, // the widget always shows the grid
         plate: true,
         placement: pick(placements),
