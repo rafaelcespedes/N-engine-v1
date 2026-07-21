@@ -27,7 +27,8 @@ import { buildGrid, previewDims } from "@/lib/grid";
 import { ANIM_MS, VIDEO_TAIL_MS, phasesAt } from "@/lib/animate";
 import { drawBase } from "@/lib/layers/base";
 import { drawSlice } from "@/lib/layers/slice";
-import { drawPanels } from "@/lib/layers/panels";
+import { drawPanels, panelFillMap } from "@/lib/layers/panels";
+import { drawDiagonals } from "@/lib/layers/diagonals";
 import { drawGridLines } from "@/lib/layers/gridLines";
 import { drawPlate } from "@/lib/layers/plate";
 import { drawContent, type ContentAssets } from "@/lib/layers/content";
@@ -161,6 +162,19 @@ export function useCompositor(src: string, params: Params): Compositor {
           p.panelColors,
           p.seed,
           p.panelDensity,
+          ph ? ph.panelsReveal : 1
+        );
+      }
+      if (p.diagonals) {
+        // Only in cells the panels didn't take; shares panelDensity and the panel
+        // reveal window so the two build in together.
+        drawDiagonals(
+          octx,
+          grid,
+          p.seed,
+          p.panelDensity,
+          p.panel ? panelFillMap(grid, p.seed, p.panelDensity) : null,
+          1,
           ph ? ph.panelsReveal : 1
         );
       }

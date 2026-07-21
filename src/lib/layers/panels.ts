@@ -23,7 +23,46 @@ import { easeOutCubic, wipeRect, type WipeDirection } from "../animate";
 const ADJACENCY_PENALTY = 0.3;
 
 /** Portion of the reveal window each individual cell's wipe takes. */
-const WIPE_DUR = 0.4;
+export const WIPE_DUR = 0.4;
+
+/**
+ * The seeded on/off decision per cell. Two draws happen for every cell (fill, then
+ * color) so the sequence is stable regardless of density or color count — which is why
+ * this can be recomputed elsewhere and still match what drawPanels renders.
+ */
+function computeFill(
+  grid: Grid,
+  seed: number,
+  density: number,
+  colorCount: number
+): { filled: boolean[]; colorIdx: number[] } {
+  const rng = makeRng(deriveSeed(seed, "panels"));
+  const cols = grid.spec.cols;
+  const n = grid.cells.length;
+  const filled: boolean[] = new Array(n).fill(false);
+  const colorIdx: number[] = new Array(n).fill(0);
+  for (let i = 0; i < n; i++) {
+    const cell = grid.cells[i];
+    const a = rng();
+    const b = rng();
+    const leftFilled = cell.col > 0 && filled[i - 1];
+    const topFilled = cell.row > 0 && filled[i - cols];
+    const chance = density * (leftFilled || topFilled ? ADJACENCY_PENALTY : 1);
+    if (a < chance) {
+      filled[i] = true;
+      colorIdx[i] = Math.floor(b * colorCount);
+    }
+  }
+  return { filled, colorIdx };
+}
+
+/**
+ * Which cells the panel layer fills, for layers that need to avoid them (see
+ * layers/diagonals.ts). Identical to what drawPanels renders for the same seed/density.
+ */
+export function panelFillMap(grid: Grid, seed: number, density: number): boolean[] {
+  return computeFill(grid, seed, density, 1).filled;
+}
 
 export function drawPanels(
   ctx: OffscreenCanvasRenderingContext2D,
@@ -35,26 +74,10 @@ export function drawPanels(
   reveal = 1
 ): void {
   if (colors.length === 0) return;
-  const rng = makeRng(deriveSeed(seed, "panels"));
   const cols = grid.spec.cols;
   const rows = grid.spec.rows;
   const n = grid.cells.length;
-  const filled: boolean[] = new Array(n).fill(false);
-  const colorIdx: number[] = new Array(n).fill(0);
-
-  // Pass 1 — seeded decisions (order-stable regardless of density).
-  for (let i = 0; i < n; i++) {
-    const cell = grid.cells[i];
-    const a = rng();
-    const b = rng();
-    const leftFilled = cell.col > 0 && filled[i - 1];
-    const topFilled = cell.row > 0 && filled[i - cols];
-    const chance = density * (leftFilled || topFilled ? ADJACENCY_PENALTY : 1);
-    if (a < chance) {
-      filled[i] = true;
-      colorIdx[i] = Math.floor(b * colors.length);
-    }
-  }
+  const { filled, colorIdx } = computeFill(grid, seed, density, colors.length);
 
   // Per-cell animation staggers + wipe directions — own rng stream so the fill/color
   // decisions above are byte-identical whether or not the piece is animating.

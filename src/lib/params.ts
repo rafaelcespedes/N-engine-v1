@@ -79,6 +79,9 @@ export interface Params {
   offset: 1 | 2 | 3;
   offsetDirection: OffsetDirection;
 
+  /** Corner-to-corner hairline in empty (non-panel) cells. Density rides on panelDensity. */
+  diagonals: boolean;
+
   plate: boolean;
   placement: PlatePlacement;
   /** Copy laid inside the plate, auto-fit to its size. */
@@ -116,6 +119,8 @@ export const DEFAULT_PARAMS: Params = {
   sliceShift: false,
   offset: 1,
   offsetDirection: "right",
+
+  diagonals: false,
 
   plate: false,
   placement: "center",

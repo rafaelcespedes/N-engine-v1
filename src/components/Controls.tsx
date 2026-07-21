@@ -171,6 +171,12 @@ export function Controls({
       </Feature>
 
       <Feature
+        title="Diagonals"
+        active={params.diagonals}
+        onToggle={(v) => update({ diagonals: v })}
+      />
+
+      <Feature
         title="Slice shift"
         active={params.sliceShift}
         onToggle={(v) => update({ sliceShift: v })}
