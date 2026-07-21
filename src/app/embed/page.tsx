@@ -26,8 +26,8 @@ const PAD = 20;
 
 /**
  * Placeholder copy the widget's randomizer cycles through — written about what the tool
- * does, so the demo reads like the system describing itself. Half the rolls drop the
- * body and run title-only, so titles double as standalone statements.
+ * does, so the demo reads like the system describing itself. Half the rolls are
+ * title-only and pull from HEADLINE_POOL instead.
  */
 const COPY_POOL = [
   { title: "The New Standard", body: "A composable grid system for generative brand art." },
@@ -44,6 +44,26 @@ const COPY_POOL = [
   { title: "Ships Itself", body: "Launch assets without a designer in the loop." },
   { title: "One Formula", body: "A brand that draws its own artwork." },
   { title: "Nothing Spare", body: "If it doesn't need to move, it isn't a control." },
+];
+
+/**
+ * Headlines for the title-only rolls. Deliberately ~70% longer than the paired titles
+ * above — with no body beneath them they carry the whole message, and the extra length
+ * gives the plate something to hold.
+ */
+const HEADLINE_POOL = [
+  "A brand that draws itself",
+  "Constraints, not templates",
+  "Every output, on brand",
+  "Rules that keep producing",
+  "One formula, endless output",
+  "Set the rules, step back",
+  "Fewer controls, more range",
+  "Made to run without you",
+  "A system that ships assets",
+  "Composition by constraint",
+  "Never off brand by design",
+  "Built to keep on building",
 ];
 
 function pick<T>(arr: T[]): T {
@@ -110,16 +130,18 @@ export default function EmbedPage() {
       const placements: PlatePlacement[] =
         cfg.grid === "5x3" ? ["left", "right"] : ["left", "right", "center"];
       const pair = pick(COPY_POOL);
+      const titleOnly = Math.random() < 0.5;
       return {
         ...p,
         ...cfg,
         gridLines: true, // the widget always shows the grid
         plate: true,
         placement: pick(placements),
-        plateTitle: pair.title,
-        // Half the rolls are title-only. The content layer already lays out a
-        // title with no body (it just sits flush to the bottom of the plate).
-        plateBody: Math.random() < 0.5 ? "" : pair.body,
+        // Half the rolls are title-only, using a longer standalone headline. The
+        // content layer already lays out a title with no body (it just sits flush
+        // to the bottom of the plate).
+        plateTitle: titleOnly ? pick(HEADLINE_POOL) : pair.title,
+        plateBody: titleOnly ? "" : pair.body,
         plateLogo: Math.random() < 0.85,
         // Half the rolls play the build-in animation (plays once, then holds).
         animate: Math.random() < 0.5,
