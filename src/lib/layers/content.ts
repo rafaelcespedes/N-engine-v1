@@ -45,7 +45,7 @@ const TITLE_LINE_HEIGHT = 0.864;
 /** Body line height. */
 const BODY_LINE_HEIGHT = 1.248;
 /** Gap between title and body, as a fraction of plate width. */
-const COPY_GAP = 0.02268;
+const COPY_GAP = 0.02142;
 
 /**
  * Plate-proportion fixups. Content is sized relative to the plate's width, so extreme
