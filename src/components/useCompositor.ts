@@ -54,9 +54,6 @@ export interface Compositor extends CompositorState {
   downloadVideo: (filenameBase: string) => Promise<void>;
 }
 
-/** Static level the preview holds at after the build-in settles (dropped for exports). */
-const RESIDUAL_STATIC = 0.4;
-
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -100,9 +97,6 @@ export function useCompositor(src: string, params: Params): Compositor {
 
   // TV-static assets (noise tiles + scanlines), built lazily on first animated frame.
   const staticAssets = useRef<StaticAssets | null>(null);
-  // Mirrors `recording` for use inside composite() (which doesn't see React state). The
-  // residual preview static is suppressed while recording so exports clear normally.
-  const recordingRef = useRef(false);
 
   const paramsRef = useRef<Params>(params);
   paramsRef.current = params;
@@ -226,18 +220,12 @@ export function useCompositor(src: string, params: Params): Compositor {
     ctx.drawImage(art, 0, 0);
     if (overlayLayer.current) ctx.drawImage(overlayLayer.current, 0, 0);
 
-    // TV-static overlay — above everything, while animating. Follows the tune-in curve;
-    // in on-screen preview it also floors at RESIDUAL_STATIC so it keeps running after
-    // the build settles. That floor is dropped while recording, so exports clear normally.
-    if (ph) {
-      let sLevel = ph.staticLevel;
-      if (paramsRef.current.animate && !recordingRef.current) {
-        sLevel = Math.max(sLevel, RESIDUAL_STATIC);
-      }
-      if (sLevel > 0) {
-        if (!staticAssets.current) staticAssets.current = makeStaticAssets();
-        drawStaticNoise(ctx, w, h, sLevel, staticAssets.current);
-      }
+    // TV-static overlay — above everything, while animating. Constant level throughout
+    // (no fade). The loop keeps running while animation is on, so it also persists in
+    // on-screen preview after the build settles; recorded exports carry the same grain.
+    if (ph && ph.staticLevel > 0) {
+      if (!staticAssets.current) staticAssets.current = makeStaticAssets();
+      drawStaticNoise(ctx, w, h, ph.staticLevel, staticAssets.current);
     }
     ctx.filter = "none";
 
@@ -342,7 +330,6 @@ export function useCompositor(src: string, params: Params): Compositor {
     if (!canvas || !picked) return;
 
     setRecording(true);
-    recordingRef.current = true; // suppress the residual preview static during capture
     try {
       await new Promise<void>((resolve, reject) => {
         const stream = canvas.captureStream(60);
@@ -375,7 +362,6 @@ export function useCompositor(src: string, params: Params): Compositor {
       });
     } finally {
       setRecording(false);
-      recordingRef.current = false;
     }
   }, [play]);
 

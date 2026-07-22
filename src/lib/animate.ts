@@ -14,6 +14,9 @@ export const ANIM_MS = 2380;
 /** Extra hold recorded at the end of a video export. */
 export const VIDEO_TAIL_MS = 600;
 
+/** TV-static grain level — constant for the whole animation (no tune-in/clear). */
+const STATIC_LEVEL = 0.4;
+
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 export const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
@@ -42,9 +45,8 @@ export function phasesAt(t: number): AnimPhases {
     panelsReveal: win(t, 0.06, 0.5),
     plateReveal: win(t, 0.38, 0.74),
     contentProgress: easeOutCubic(win(t, 0.74, 0.884)),
-    // Tunes in: ramps up fast, then fades out as the composition builds; gone by ~0.9
-    // so the held frame is clean.
-    staticLevel: easeOutCubic(win(t, 0.0, 0.04)) * (1 - easeInOutCubic(win(t, 0.12, 0.9))),
+    // Constant grain — the same throughout the whole animation, no fade in or out.
+    staticLevel: STATIC_LEVEL,
   };
 }
 
