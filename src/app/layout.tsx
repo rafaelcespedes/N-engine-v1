@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 // Headlines: Bricolage Grotesque (variable). Body: IBM Plex Sans.
 const headline = Bricolage_Grotesque({
@@ -30,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${headline.variable} ${body.variable}`}>
       <body className="font-sans">{children}</body>
+      <GoogleAnalytics />
     </html>
   );
 }
