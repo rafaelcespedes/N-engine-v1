@@ -32,6 +32,7 @@ import { drawDiagonals } from "@/lib/layers/diagonals";
 import { drawGridLines } from "@/lib/layers/gridLines";
 import { drawPlate } from "@/lib/layers/plate";
 import { drawContent, type ContentAssets } from "@/lib/layers/content";
+import { makeStaticAssets, drawStaticNoise, type StaticAssets } from "@/lib/layers/staticNoise";
 
 export interface CompositorState {
   loading: boolean;
@@ -93,6 +94,9 @@ export function useCompositor(src: string, params: Params): Compositor {
     headlineFamily: "sans-serif",
     bodyFamily: "sans-serif",
   });
+
+  // TV-static assets (noise tiles + scanlines), built lazily on first animated frame.
+  const staticAssets = useRef<StaticAssets | null>(null);
 
   const paramsRef = useRef<Params>(params);
   paramsRef.current = params;
@@ -214,6 +218,12 @@ export function useCompositor(src: string, params: Params): Compositor {
     ctx.clearRect(0, 0, w, h);
     ctx.drawImage(art, 0, 0);
     if (overlayLayer.current) ctx.drawImage(overlayLayer.current, 0, 0);
+
+    // TV-static overlay — animation only, above everything. `t` is 0..1 loop time.
+    if (ph && ph.staticLevel > 0) {
+      if (!staticAssets.current) staticAssets.current = makeStaticAssets();
+      drawStaticNoise(ctx, w, h, ph.staticLevel, staticAssets.current, t ?? 0);
+    }
 
     // Avoid 60fps setState churn: during animated frames only sync dimension changes.
     setState((s) => {

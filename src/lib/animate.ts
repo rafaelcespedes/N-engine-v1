@@ -32,6 +32,8 @@ export interface AnimPhases {
   plateReveal: number;
   /** 0..1 fade of the copy/logo, after the plate has filled. */
   contentProgress: number;
+  /** 0..1 amount of the TV-static overlay — strong early, clears as the piece resolves. */
+  staticLevel: number;
 }
 
 export function phasesAt(t: number): AnimPhases {
@@ -40,6 +42,9 @@ export function phasesAt(t: number): AnimPhases {
     panelsReveal: win(t, 0.06, 0.5),
     plateReveal: win(t, 0.38, 0.74),
     contentProgress: easeOutCubic(win(t, 0.74, 0.884)),
+    // Tunes in: ramps up fast, then fades out as the composition builds; gone by ~0.9
+    // so the held frame is clean.
+    staticLevel: easeOutCubic(win(t, 0.0, 0.04)) * (1 - easeInOutCubic(win(t, 0.12, 0.9))),
   };
 }
 
