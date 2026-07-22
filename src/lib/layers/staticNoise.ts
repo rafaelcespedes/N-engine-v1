@@ -1,26 +1,26 @@
 /**
- * Static-noise layer: a subtle analog-TV overlay drawn ABOVE everything, only during the
- * animation. Reads as the composition "tuning in" from static — heavy at the start of the
- * build-in, clearing as the piece resolves (intensity is `AnimPhases.staticLevel`).
+ * Static-noise layer: a subtle analog-TV overlay drawn ABOVE everything, during the
+ * animation. Reads as the composition "tuning in" from static — strong at the start of
+ * the build-in, clearing as the piece resolves (intensity is `AnimPhases.staticLevel`);
+ * for on-screen preview it also keeps running after the build settles (see useCompositor).
  *
  * Deliberately monochrome speckle rather than RGB TV static, so it sits with the stippled
  * source art instead of fighting it: sparse bright specks over the dark composition, a few
- * dark ones for grain in the light areas, faint scanlines, and one soft tracking band that
- * rolls down the frame. Kept low-amplitude — at full `level` the peak is still gentle.
+ * dark ones for grain in the light areas, plus faint scanlines.
  */
 
 const TILE = 256;
 const TILE_COUNT = 12; // cycle through these for per-frame flicker
 const PEAK = 0.55; // scales staticLevel → grain alpha; per-pixel alpha keeps it sparse
+const GRAIN_SCALE = 1.2; // speck size (1.0 = native tile pixel)
 const SCANLINE_ALPHA = 0.06;
-const BAND_ALPHA = 0.05;
 
 export interface StaticAssets {
   tiles: HTMLCanvasElement[];
   scanlines: HTMLCanvasElement;
 }
 
-/** Build the noise tiles + scanline tile once (they're reused every frame). */
+/** Build the noise tiles + scanline tile once (reused every frame). */
 export function makeStaticAssets(): StaticAssets {
   const tiles: HTMLCanvasElement[] = [];
   for (let n = 0; n < TILE_COUNT; n++) {
@@ -66,40 +66,28 @@ export function drawStaticNoise(
   w: number,
   h: number,
   level: number,
-  assets: StaticAssets,
-  /** Play time 0..1 — drives the rolling tracking band. */
-  t: number
+  assets: StaticAssets
 ): void {
   if (level <= 0) return;
   ctx.save();
 
-  // Grain: a random tile, tiled across the frame with a random offset, so it reads as
-  // fresh static each frame rather than a scrolling texture.
+  // Grain: a random tile, scaled 1.2x and offset randomly each frame, so it reads as
+  // fresh static rather than a scrolling texture.
   const tile = assets.tiles[Math.floor(Math.random() * assets.tiles.length)];
   const pat = ctx.createPattern(tile, "repeat")!;
+  const m = new DOMMatrix();
+  m.scaleSelf(GRAIN_SCALE);
+  m.translateSelf(-Math.random() * TILE, -Math.random() * TILE);
+  pat.setTransform(m);
   ctx.globalAlpha = level * PEAK;
   ctx.fillStyle = pat;
-  ctx.save();
-  ctx.translate(-Math.random() * TILE, -Math.random() * TILE);
-  ctx.fillRect(0, 0, w + TILE, h + TILE);
-  ctx.restore();
+  ctx.fillRect(0, 0, w, h);
 
-  // Faint scanlines, scaled to the render.
+  // Faint scanlines.
   const slPat = ctx.createPattern(assets.scanlines, "repeat")!;
   ctx.globalAlpha = level;
   ctx.fillStyle = slPat;
   ctx.fillRect(0, 0, w, h);
-
-  // Soft tracking band rolling down the frame.
-  const bandH = h * 0.09;
-  const y = (((t * 1.7) % 1) * (h + bandH)) - bandH;
-  const g = ctx.createLinearGradient(0, y, 0, y + bandH);
-  g.addColorStop(0, "rgba(255,255,255,0)");
-  g.addColorStop(0.5, `rgba(255,255,255,${BAND_ALPHA})`);
-  g.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.globalAlpha = level;
-  ctx.fillStyle = g;
-  ctx.fillRect(0, y, w, bandH);
 
   ctx.restore();
 }

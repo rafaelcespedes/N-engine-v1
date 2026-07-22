@@ -54,6 +54,9 @@ export interface Compositor extends CompositorState {
   downloadVideo: (filenameBase: string) => Promise<void>;
 }
 
+/** Static level the preview holds at after the build-in settles (dropped for exports). */
+const RESIDUAL_STATIC = 0.4;
+
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -97,6 +100,9 @@ export function useCompositor(src: string, params: Params): Compositor {
 
   // TV-static assets (noise tiles + scanlines), built lazily on first animated frame.
   const staticAssets = useRef<StaticAssets | null>(null);
+  // Mirrors `recording` for use inside composite() (which doesn't see React state). The
+  // residual preview static is suppressed while recording so exports clear normally.
+  const recordingRef = useRef(false);
 
   const paramsRef = useRef<Params>(params);
   paramsRef.current = params;
@@ -216,14 +222,26 @@ export function useCompositor(src: string, params: Params): Compositor {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.clearRect(0, 0, w, h);
+    // While animating, soften everything 1px so the layers blend. Applies to every draw
+    // below (art, overlay, static); reset before returning.
+    if (ph) ctx.filter = "blur(1px)";
     ctx.drawImage(art, 0, 0);
     if (overlayLayer.current) ctx.drawImage(overlayLayer.current, 0, 0);
 
-    // TV-static overlay — animation only, above everything. `t` is 0..1 loop time.
-    if (ph && ph.staticLevel > 0) {
-      if (!staticAssets.current) staticAssets.current = makeStaticAssets();
-      drawStaticNoise(ctx, w, h, ph.staticLevel, staticAssets.current, t ?? 0);
+    // TV-static overlay — above everything, while animating. Follows the tune-in curve;
+    // in on-screen preview it also floors at RESIDUAL_STATIC so it keeps running after
+    // the build settles. That floor is dropped while recording, so exports clear normally.
+    if (ph) {
+      let sLevel = ph.staticLevel;
+      if (paramsRef.current.animate && !recordingRef.current) {
+        sLevel = Math.max(sLevel, RESIDUAL_STATIC);
+      }
+      if (sLevel > 0) {
+        if (!staticAssets.current) staticAssets.current = makeStaticAssets();
+        drawStaticNoise(ctx, w, h, sLevel, staticAssets.current);
+      }
     }
+    ctx.filter = "none";
 
     // Avoid 60fps setState churn: during animated frames only sync dimension changes.
     setState((s) => {
@@ -301,10 +319,9 @@ export function useCompositor(src: string, params: Params): Compositor {
       if (t0 === null) return;
       const t = Math.min(1, (performance.now() - t0) / ANIM_MS);
       if (sourceRef.current) composite.current(t);
-      if (t >= 1) {
-        playT0.current = null; // done — hold the final (static-parity) frame
-        return;
-      }
+      // The build-in holds at t=1, but the loop keeps running while animation is on so
+      // the residual preview static keeps flickering. It's stopped when animation is
+      // toggled off (the effect below sets playT0=null and cancels the frame).
       rafId.current = requestAnimationFrame(tick);
     };
     rafId.current = requestAnimationFrame(tick);
@@ -327,6 +344,7 @@ export function useCompositor(src: string, params: Params): Compositor {
     if (!canvas || !picked) return;
 
     setRecording(true);
+    recordingRef.current = true; // suppress the residual preview static during capture
     try {
       await new Promise<void>((resolve, reject) => {
         const stream = canvas.captureStream(60);
@@ -359,6 +377,7 @@ export function useCompositor(src: string, params: Params): Compositor {
       });
     } finally {
       setRecording(false);
+      recordingRef.current = false;
     }
   }, [play]);
 
