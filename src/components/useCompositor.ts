@@ -224,7 +224,7 @@ export function useCompositor(src: string, params: Params): Compositor {
     ctx.clearRect(0, 0, w, h);
     // While animating, soften everything 1px so the layers blend. Applies to every draw
     // below (art, overlay, static); reset before returning.
-    if (ph) ctx.filter = "blur(1px)";
+    if (ph) ctx.filter = "blur(0.5px)";
     ctx.drawImage(art, 0, 0);
     if (overlayLayer.current) ctx.drawImage(overlayLayer.current, 0, 0);
 

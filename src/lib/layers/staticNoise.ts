@@ -11,7 +11,7 @@
 
 const TILE = 256;
 const TILE_COUNT = 12; // cycle through these for per-frame flicker
-const PEAK = 0.55; // scales staticLevel → grain alpha; per-pixel alpha keeps it sparse
+const PEAK = 0.77; // scales staticLevel → grain alpha; per-pixel alpha keeps it sparse
 const GRAIN_SCALE = 1.2; // speck size (1.0 = native tile pixel)
 const SCANLINE_ALPHA = 0.06;
 
