@@ -174,16 +174,14 @@ export function useCompositor(src: string, params: Params): Compositor {
           p.panelDensity,
           ph ? ph.panelsReveal : 1
         );
-      }
-      if (p.diagonals) {
-        // Only in cells the panels didn't take; shares panelDensity and the panel
-        // reveal window so the two build in together.
+        // Diagonals live with the panel: a hairline in the cells panels didn't take,
+        // sharing panelDensity and the panel reveal window so they build in together.
         drawDiagonals(
           octx,
           grid,
           p.seed,
           p.panelDensity,
-          p.panel ? panelFillMap(grid, p.seed, p.panelDensity) : null,
+          panelFillMap(grid, p.seed, p.panelDensity),
           1,
           ph ? ph.panelsReveal : 1
         );

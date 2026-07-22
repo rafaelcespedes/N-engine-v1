@@ -170,8 +170,6 @@ export function Controls({
         />
       </Feature>
 
-      {/* Diagonals: no control — a widget-only element, toggled via params. */}
-
       <Feature
         title="Slice shift"
         active={params.sliceShift}

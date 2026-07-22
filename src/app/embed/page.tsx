@@ -165,7 +165,6 @@ export default function EmbedPage() {
         panelColors,
         panelDensity,
         gridLines: true, // the widget always shows the grid
-        diagonals: Math.random() < 0.5, // hairline strokes in the empty cells
         plate: true,
         placement: pick(placements),
         // Half the rolls are title-only, using a longer standalone headline. The
