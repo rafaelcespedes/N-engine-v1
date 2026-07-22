@@ -40,6 +40,9 @@ export const PLACEHOLDERS: Placeholder[] = [
   ph("topographic", "Topographic"),
   ph("ridges", "Ridges"),
   ph("eclipse", "Eclipse"),
+  ph("earth", "Earth"),
+  ph("orbit", "Orbit"),
+  ph("flower", "Flower"),
 ];
 
 /** The one loaded on first paint. */
