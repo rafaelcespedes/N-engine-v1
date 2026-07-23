@@ -16,11 +16,11 @@ import type {
   Params,
 } from "./params";
 import { GRID_PRESETS } from "./grid";
+import { PANEL_PAIRS } from "./palette";
 
 const ASPECTS: AspectRatio[] = ["1:1", "16:9", "3:4"];
 const DIRECTIONS: OffsetDirection[] = ["up", "down", "left", "right"];
 const OFFSETS: (1 | 2 | 3)[] = [1, 2, 3];
-const MONO: PanelColor[] = ["white", "black"];
 const ACCENTS: PanelColor[] = ["blue", "green", "yellow", "magenta", "orange", "indigo"];
 
 function pick<T>(arr: T[]): T {
@@ -50,9 +50,15 @@ export function randomConfig(): RandomFields {
     )
   );
 
-  // Slot 1 is always mono; slot 2 (an accent) appears ~half the time.
+  // White is the fixed base. Rolls split across the three treatments:
+  // white-only (transparent), white + one accent, white + a preset pair.
+  const colorRoll = Math.random();
   const panelColors: PanelColor[] =
-    Math.random() < 0.5 ? [pick(MONO), pick(ACCENTS)] : [pick(MONO)];
+    colorRoll < 0.3
+      ? ["white"]
+      : colorRoll < 0.7
+        ? ["white", pick(ACCENTS)]
+        : ["white", ...pick(PANEL_PAIRS)];
 
   const gridLines = Math.random() < 0.65;
   let panel = Math.random() < 0.85;
@@ -70,7 +76,7 @@ export function randomConfig(): RandomFields {
     gridLines,
     panel,
     panelColors,
-    panelDensity: 0.25 + Math.random() * 0.4, // 0.25–0.65
+    panelDensity: 0.3 + Math.random() * 0.35, // 0.30–0.65
     sliceShift,
     offset: pick(OFFSETS),
     offsetDirection: pick(DIRECTIONS),

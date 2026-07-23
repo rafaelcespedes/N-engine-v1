@@ -34,8 +34,7 @@ const ASPECT_OPTS: { value: AspectRatio; label: string }[] = [
 
 const GRID_ORDER: GridPreset[] = ["5x5", "7x4", "5x3", "5x6", "4x5"];
 
-/** Panels: slot 1 is monochrome (black/white), slot 2 is the accent colors. */
-const COLOR1_OPTS: PanelColor[] = ["white", "black"];
+/** Panel accents. White is the fixed base color and isn't picked. */
 const COLOR2_OPTS: PanelColor[] = ["blue", "green", "yellow", "magenta", "orange", "indigo"];
 
 export function Controls({
@@ -71,13 +70,11 @@ export function Controls({
     (g) => GRID_PRESETS[g].aspect === params.aspect
   );
 
-  // Panels: color 1 (mono) is always set; color 2 is always a selection too — either
-  // transparent, a single accent, or a two-accent pair. panelColors encodes it:
-  // [c1] = transparent, [c1, a] = single, [c1, a, b] = pair.
-  const color1: PanelColor = params.panelColors[0] ?? "white";
+  // Panels: white is the fixed base. The picker chooses the accent treatment —
+  // transparent (white only), a single accent (50/50 with white), or a pair
+  // (thirds with white). panelColors = ["white", ...accents].
   const accents = params.panelColors.slice(1);
-  const setColor1 = (c: PanelColor) => update({ panelColors: [c, ...accents] });
-  const setAccents = (next: PanelColor[]) => update({ panelColors: [color1, ...next] });
+  const setAccents = (next: PanelColor[]) => update({ panelColors: ["white", ...next] });
 
   return (
     <div className="flex h-full flex-col">
@@ -144,18 +141,10 @@ export function Controls({
       />
 
       <Feature title="Panel" active={params.panel} onToggle={(v) => update({ panel: v })}>
-        <div className="flex flex-col gap-3">
-          <SwatchPicker
-            label="Color 1"
-            options={COLOR1_OPTS}
-            value={color1}
-            onChange={(c) => c && setColor1(c)}
-          />
-          <Color2Picker selected={accents} onChange={setAccents} />
-        </div>
+        <Color2Picker selected={accents} onChange={setAccents} />
         <Slider
           label="Density"
-          min={0}
+          min={0.3}
           max={1}
           step={0.02}
           value={params.panelDensity}
@@ -393,8 +382,8 @@ function Thumb({
 }
 
 /**
- * Color 2: always one selection — transparent (no second color), a single accent, or a
- * two-accent Pair (one split swatch; fills panels with color 1 + both accents).
+ * Panel color: always one selection — transparent (white-only panels), a single accent
+ * (50/50 with white), or a two-accent Pair (one split swatch; thirds with white).
  */
 function Color2Picker({
   selected,
@@ -413,7 +402,7 @@ function Color2Picker({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-xs text-white/70">Color 2</span>
+      <span className="text-xs text-white/70">Color</span>
 
       <span className="text-[10px] uppercase tracking-wide text-white/40">Single</span>
       <div className="flex gap-1.5">
@@ -453,52 +442,6 @@ function Color2Picker({
             }}
           />
         ))}
-      </div>
-    </div>
-  );
-}
-
-/** Single-select swatch row over a given palette. Clearable slots return null. */
-function SwatchPicker({
-  label,
-  options,
-  value,
-  onChange,
-  clearable = false,
-}: {
-  label: string;
-  options: PanelColor[];
-  value: PanelColor | null;
-  onChange: (c: PanelColor | null) => void;
-  clearable?: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-xs text-white/70">{label}</span>
-      <div className="flex gap-1.5">
-        {options.map((c) => {
-          const sel = c === value;
-          return (
-            <button
-              key={c}
-              type="button"
-              onClick={() => onChange(sel && clearable ? null : c)}
-              title={c}
-              className={`h-6 w-6 rounded transition-transform ${
-                sel ? "ring-2 ring-white ring-offset-2 ring-offset-panel" : ""
-              }`}
-              style={{
-                backgroundColor: PANEL_HEX[c],
-                // Inline boxShadow would override the Tailwind ring (also a box-shadow),
-                // so only draw the black swatch's outline when it isn't selected.
-                boxShadow:
-                  c === "black" && !sel
-                    ? "inset 0 0 0 1px rgba(255,255,255,0.25)"
-                    : undefined,
-              }}
-            />
-          );
-        })}
       </div>
     </div>
   );

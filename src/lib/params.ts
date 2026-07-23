@@ -70,7 +70,7 @@ export interface Params {
   gridLines: boolean;
 
   panel: boolean;
-  /** Pick 1–2. Distribution across cells must be deterministic off `seed`. */
+  /** "white" plus 0–2 accents — white is the fixed base. Cell distribution is deterministic off `seed`. */
   panelColors: PanelColor[];
   /** Fraction of cells filled, 0–1. */
   panelDensity: number;

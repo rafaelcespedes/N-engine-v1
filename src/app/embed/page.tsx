@@ -15,7 +15,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_PARAMS } from "@/lib/params";
-import type { PanelColor, Params, PlatePlacement } from "@/lib/params";
+import type { Params, PlatePlacement } from "@/lib/params";
 import { allowsCenterPlate, previewDims } from "@/lib/grid";
 import { DEFAULT_PLACEHOLDER, randomPlaceholder } from "@/lib/placeholders";
 import type { Placeholder } from "@/lib/placeholders";
@@ -83,9 +83,6 @@ function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/** Share of widget rolls that use black panels (the app's own randomizer sits at 0.5). */
-const BLACK_PANEL_SHARE = 0.2;
-
 
 function useContainedSize(ratioW: number, ratioH: number) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -148,22 +145,9 @@ export default function EmbedPage() {
         : ["left", "right"];
       const pair = pick(COPY_POOL);
       const titleOnly = Math.random() < 0.5;
-      // Black panels disappear into the artwork, so the widget sets their share
-      // directly rather than taking the app's 50/50 mono roll. Slot 2 (an accent,
-      // never black) is left as rolled.
-      const panelColors: PanelColor[] = [
-        Math.random() < BLACK_PANEL_SHARE ? "black" : "white",
-        ...cfg.panelColors.slice(1),
-      ];
-      // When black survives the re-roll, thin the field too — black cells read as
-      // holes punched in the artwork, so fewer of them go a long way.
-      const panelDensity =
-        panelColors[0] === "black" ? cfg.panelDensity * 0.7 : cfg.panelDensity;
       return {
         ...p,
         ...cfg,
-        panelColors,
-        panelDensity,
         gridLines: true, // the widget always shows the grid
         plate: true,
         placement: pick(placements),
