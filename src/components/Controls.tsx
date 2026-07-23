@@ -403,9 +403,7 @@ function Color2Picker({
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-xs text-white/70">Color</span>
-
-      <span className="text-[10px] uppercase tracking-wide text-white/40">Single</span>
-      <div className="flex gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         <button
           type="button"
           onClick={() => onChange([])}
@@ -426,10 +424,6 @@ function Color2Picker({
             style={{ backgroundColor: PANEL_HEX[c] }}
           />
         ))}
-      </div>
-
-      <span className="mt-1 text-[10px] uppercase tracking-wide text-white/40">Pairs</span>
-      <div className="flex gap-1.5">
         {PANEL_PAIRS.map(([a, b]) => (
           <button
             key={`${a}-${b}`}
