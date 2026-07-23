@@ -121,7 +121,7 @@ export const DEFAULT_PARAMS: Params = {
   plate: false,
   placement: "center",
   plateCopy: false,
-  plateTitle: "The New Standard",
+  plateTitle: "The new standard",
   plateBody: "A composable grid system for generative brand art.",
   plateLogo: true,
   plateTheme: "dark",
