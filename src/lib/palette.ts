@@ -13,6 +13,7 @@ export const PANEL_HEX: Record<PanelColor, string> = {
   yellow: "#F3C202",
   magenta: "#FA46F0",
   orange: "#FF5600",
+  indigo: "#5142F4",
 };
 
 /** Swatch order in the picker. */
@@ -24,4 +25,17 @@ export const PANEL_ORDER: PanelColor[] = [
   "yellow",
   "magenta",
   "orange",
+  "indigo",
+];
+
+/**
+ * Color 2 "Pairs": preset two-accent combinations. Selecting one fills panels with
+ * color 1 plus both accents (panelColors = [c1, a, b]).
+ */
+export const PANEL_PAIRS: [PanelColor, PanelColor][] = [
+  ["blue", "yellow"],   // 65DBFF / F3C202
+  ["blue", "orange"],   // 65DBFF / FF5600
+  ["yellow", "green"],  // F3C202 / 00E696
+  ["magenta", "yellow"],// FA46F0 / F3C202
+  ["indigo", "green"],  // 5142F4 / 00E696
 ];

@@ -18,7 +18,8 @@ export type PanelColor =
   | "green"
   | "yellow"
   | "magenta"
-  | "orange";
+  | "orange"
+  | "indigo";
 
 export type OffsetDirection = "up" | "down" | "left" | "right";
 

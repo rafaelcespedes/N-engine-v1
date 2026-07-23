@@ -21,7 +21,7 @@ const ASPECTS: AspectRatio[] = ["1:1", "16:9", "3:4"];
 const DIRECTIONS: OffsetDirection[] = ["up", "down", "left", "right"];
 const OFFSETS: (1 | 2 | 3)[] = [1, 2, 3];
 const MONO: PanelColor[] = ["white", "black"];
-const ACCENTS: PanelColor[] = ["blue", "green", "yellow", "magenta", "orange"];
+const ACCENTS: PanelColor[] = ["blue", "green", "yellow", "magenta", "orange", "indigo"];
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];

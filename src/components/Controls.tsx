@@ -22,7 +22,7 @@ import type {
   PlateTheme,
 } from "@/lib/params";
 import { GRID_PRESETS, DEFAULT_GRID_FOR, allowsCenterPlate } from "@/lib/grid";
-import { PANEL_HEX } from "@/lib/palette";
+import { PANEL_HEX, PANEL_PAIRS } from "@/lib/palette";
 import { PLACEHOLDERS, type Placeholder } from "@/lib/placeholders";
 import { Section, Feature, Segmented, Slider, ScrollArea } from "./ui";
 
@@ -36,7 +36,7 @@ const GRID_ORDER: GridPreset[] = ["5x5", "7x4", "5x3", "5x6", "4x5"];
 
 /** Panels: slot 1 is monochrome (black/white), slot 2 is the accent colors. */
 const COLOR1_OPTS: PanelColor[] = ["white", "black"];
-const COLOR2_OPTS: PanelColor[] = ["blue", "green", "yellow", "magenta", "orange"];
+const COLOR2_OPTS: PanelColor[] = ["blue", "green", "yellow", "magenta", "orange", "indigo"];
 
 export function Controls({
   params,
@@ -71,13 +71,13 @@ export function Controls({
     (g) => GRID_PRESETS[g].aspect === params.aspect
   );
 
-  // Panels: two explicit color slots. Slot 2 is optional (clear to go mono).
+  // Panels: color 1 (mono) is always set; color 2 is always a selection too — either
+  // transparent, a single accent, or a two-accent pair. panelColors encodes it:
+  // [c1] = transparent, [c1, a] = single, [c1, a, b] = pair.
   const color1: PanelColor = params.panelColors[0] ?? "white";
-  const color2: PanelColor | null = params.panelColors[1] ?? null;
-  const setColor1 = (c: PanelColor) =>
-    update({ panelColors: color2 ? [c, color2] : [c] });
-  const setColor2 = (c: PanelColor | null) =>
-    update({ panelColors: c ? [color1, c] : [color1] });
+  const accents = params.panelColors.slice(1);
+  const setColor1 = (c: PanelColor) => update({ panelColors: [c, ...accents] });
+  const setAccents = (next: PanelColor[]) => update({ panelColors: [color1, ...next] });
 
   return (
     <div className="flex h-full flex-col">
@@ -144,20 +144,14 @@ export function Controls({
       />
 
       <Feature title="Panel" active={params.panel} onToggle={(v) => update({ panel: v })}>
-        <div className="flex gap-6">
+        <div className="flex flex-col gap-3">
           <SwatchPicker
             label="Color 1"
             options={COLOR1_OPTS}
             value={color1}
             onChange={(c) => c && setColor1(c)}
           />
-          <SwatchPicker
-            label="Color 2"
-            options={COLOR2_OPTS}
-            value={color2}
-            onChange={setColor2}
-            clearable
-          />
+          <Color2Picker selected={accents} onChange={setAccents} />
         </div>
         <Slider
           label="Density"
@@ -395,6 +389,72 @@ function Thumb({
         {placeholder.label}
       </span>
     </button>
+  );
+}
+
+/**
+ * Color 2: always one selection — transparent (no second color), a single accent, or a
+ * two-accent Pair (one split swatch; fills panels with color 1 + both accents).
+ */
+function Color2Picker({
+  selected,
+  onChange,
+}: {
+  /** Accent slots of panelColors: [] = transparent, [a] = single, [a, b] = pair. */
+  selected: PanelColor[];
+  onChange: (accents: PanelColor[]) => void;
+}) {
+  const isTransparent = selected.length === 0;
+  const single = selected.length === 1 ? selected[0] : null;
+  const pairKey = selected.length === 2 ? `${selected[0]}-${selected[1]}` : null;
+
+  const base = "h-6 w-6 rounded transition-transform";
+  const ring = "ring-2 ring-white ring-offset-2 ring-offset-panel";
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-xs text-white/70">Color 2</span>
+
+      <span className="text-[10px] uppercase tracking-wide text-white/40">Single</span>
+      <div className="flex gap-1.5">
+        <button
+          type="button"
+          onClick={() => onChange([])}
+          title="transparent"
+          className={`${base} border border-hair ${isTransparent ? ring : ""}`}
+          style={{
+            background:
+              "linear-gradient(to top right, transparent 44%, rgba(255,255,255,0.45) 47%, rgba(255,255,255,0.45) 53%, transparent 56%)",
+          }}
+        />
+        {COLOR2_OPTS.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => onChange([c])}
+            title={c}
+            className={`${base} ${single === c ? ring : ""}`}
+            style={{ backgroundColor: PANEL_HEX[c] }}
+          />
+        ))}
+      </div>
+
+      <span className="mt-1 text-[10px] uppercase tracking-wide text-white/40">Pairs</span>
+      <div className="flex gap-1.5">
+        {PANEL_PAIRS.map(([a, b]) => (
+          <button
+            key={`${a}-${b}`}
+            type="button"
+            onClick={() => onChange([a, b])}
+            title={`${a} / ${b}`}
+            className={`${base} ${pairKey === `${a}-${b}` ? ring : ""}`}
+            style={{
+              background: `linear-gradient(90deg, ${PANEL_HEX[a]} 0 50%, ${PANEL_HEX[b]} 50% 100%)`,
+            }}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
