@@ -8,11 +8,11 @@ import type { PanelColor } from "./params";
 export const PANEL_HEX: Record<PanelColor, string> = {
   white: "#ffffff",
   black: "#000000",
-  blue: "#74d0f8",
-  green: "#8fe958",
-  yellow: "#f8d648",
-  magenta: "#ed72f8",
-  orange: "#ef5e2c",
+  blue: "#65DBFF",
+  green: "#00E696",
+  yellow: "#F3C202",
+  magenta: "#FA46F0",
+  orange: "#FF5600",
 };
 
 /** Swatch order in the picker. */
