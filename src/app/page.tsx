@@ -164,12 +164,19 @@ export default function Page() {
 
   return (
     <>
-      {/* Mobile gate — the compositor needs a desktop-width canvas + rail. */}
-      <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#0A0A0A] px-8 text-center text-white md:hidden">
+      {/* Mobile gate — the compositor needs a desktop-width canvas + rail. All copy here
+          uses Neue Haas Grotesk Display (Adobe kit, loaded in layout). */}
+      <div
+        className="flex h-screen w-screen flex-col items-center justify-center bg-[#0A0A0A] px-8 text-center text-white md:hidden"
+        style={{
+          fontFamily: '"neue-haas-grotesk-display", "Helvetica Neue", Helvetica, Arial, sans-serif',
+          fontKerning: "none",
+        }}
+      >
         {/* App-icon (white tile + shadow baked into the PNG). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/nengine-app-icon.png" alt="Nengine" className="mb-[12.8px] w-36" />
-        <h1 className="max-w-[280px] font-display text-2xl font-normal leading-tight text-white">
+        <h1 className="max-w-[280px] text-2xl font-normal leading-tight text-white">
           Nengine is only available on desktop
         </h1>
         <p className="mt-[9.6px] max-w-xs text-sm leading-relaxed text-white/50">

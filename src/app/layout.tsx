@@ -30,6 +30,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${headline.variable} ${body.variable}`}>
+      <head>
+        {/* Adobe kit — Neue Haas Grotesk (same as rafaelcespedes.com). Used on the
+            mobile gate message. */}
+        <link rel="preconnect" href="https://use.typekit.net" crossOrigin="" />
+        <link rel="stylesheet" href="https://use.typekit.net/cds2lxc.css" />
+      </head>
       <body className="font-sans">{children}</body>
       <GoogleAnalytics />
     </html>
