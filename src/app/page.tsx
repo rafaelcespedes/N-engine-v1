@@ -12,6 +12,11 @@ import { Controls } from "@/components/Controls";
 
 const PAD = 48; // stage padding in px, mirrored in the style below
 
+// Neue Haas cuts (Adobe kit, loaded in layout). Display = the mobile heading; text = its
+// subcopy + button.
+const NEUE_DISPLAY = '"neue-haas-grotesk-display", "Helvetica Neue", Helvetica, Arial, sans-serif';
+const NEUE_TEXT = '"neue-haas-grotesk-text", "Helvetica Neue", Helvetica, Arial, sans-serif';
+
 
 /** Fit a `ratioW×ratioH` box inside the stage element, updating on resize. */
 function useContainedSize(ratioW: number, ratioH: number) {
@@ -168,10 +173,7 @@ export default function Page() {
           uses Neue Haas Grotesk Display (Adobe kit, loaded in layout). */}
       <div
         className="flex h-screen w-screen flex-col items-center justify-center bg-[#0A0A0A] px-8 text-center text-white md:hidden"
-        style={{
-          fontFamily: '"neue-haas-grotesk-display", "Helvetica Neue", Helvetica, Arial, sans-serif',
-          fontKerning: "none",
-        }}
+        style={{ fontFamily: NEUE_DISPLAY, fontKerning: "none" }}
       >
         {/* App-icon (white tile + shadow baked into the PNG). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -179,13 +181,17 @@ export default function Page() {
         <h1 className="max-w-[280px] text-2xl font-normal leading-tight text-white">
           Nengine is only available on desktop
         </h1>
-        <p className="mt-[9.6px] max-w-xs text-sm leading-relaxed text-white/50">
+        <p
+          className="mt-[9.6px] max-w-xs text-sm leading-relaxed text-white/50"
+          style={{ fontFamily: NEUE_TEXT }}
+        >
           Please open this link on a computer to view and use the application.
         </p>
         <a
           href="https://rafaelcespedes.com"
           target="_blank"
           rel="noopener noreferrer"
+          style={{ fontFamily: NEUE_TEXT }}
           className="mt-[19.2px] inline-flex items-center gap-2 rounded-lg border border-hair bg-white/5 px-4 py-2.5 text-sm text-white/85 transition-colors hover:bg-white/10"
         >
           Go To Rafaelcespedes.com →
