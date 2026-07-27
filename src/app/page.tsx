@@ -178,7 +178,7 @@ export default function Page() {
         {/* App-icon (white tile + shadow baked into the PNG). */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/nengine-app-icon.png" alt="Nengine" className="mb-[12.8px] w-36" />
-        <h1 className="max-w-[280px] text-2xl font-normal leading-tight text-white">
+        <h1 className="max-w-[280px] text-2xl font-medium leading-tight text-white">
           Nengine is only available on desktop
         </h1>
         <p
@@ -194,7 +194,7 @@ export default function Page() {
           style={{ fontFamily: NEUE_TEXT }}
           className="mt-[19.2px] inline-flex items-center gap-2 rounded-lg border border-hair bg-white/5 px-4 py-2.5 text-sm text-white/85 transition-colors hover:bg-white/10"
         >
-          Go To Rafaelcespedes.com →
+          Go to rafaelcespedes.com →
         </a>
       </div>
 
