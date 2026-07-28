@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, IBM_Plex_Sans, Inter } from "next/font/google";
+import { Bricolage_Grotesque, IBM_Plex_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
@@ -15,8 +16,13 @@ const body = IBM_Plex_Sans({
   variable: "--font-body",
   display: "swap",
 });
-// Mobile gate only.
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Mobile gate only. ABC Monument Grotesk (Regular only — the licensed weight we have).
+const monument = localFont({
+  src: "./fonts/ABCMonumentGrotesk-Regular.woff2",
+  variable: "--font-monument",
+  weight: "400",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nengine.rafaelcespedes.com"),
@@ -31,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${headline.variable} ${body.variable} ${inter.variable}`}>
+    <html lang="en" className={`${headline.variable} ${body.variable} ${monument.variable}`}>
       <body className="font-sans">{children}</body>
       <GoogleAnalytics />
     </html>

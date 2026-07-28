@@ -12,8 +12,8 @@ import { Controls } from "@/components/Controls";
 
 const PAD = 48; // stage padding in px, mirrored in the style below
 
-// Mobile gate font (Inter, loaded in layout).
-const MOBILE_FONT = 'var(--font-inter), system-ui, sans-serif';
+// Mobile gate font (ABC Monument Grotesk, loaded in layout).
+const MOBILE_FONT = 'var(--font-monument), system-ui, sans-serif';
 
 
 /** Fit a `ratioW×ratioH` box inside the stage element, updating on resize. */
