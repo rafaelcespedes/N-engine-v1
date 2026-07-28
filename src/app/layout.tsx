@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, IBM_Plex_Sans } from "next/font/google";
+import { Bricolage_Grotesque, IBM_Plex_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
@@ -15,6 +15,8 @@ const body = IBM_Plex_Sans({
   variable: "--font-body",
   display: "swap",
 });
+// Mobile gate only.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nengine.rafaelcespedes.com"),
@@ -29,13 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${headline.variable} ${body.variable}`}>
-      <head>
-        {/* Adobe kit — Neue Haas Grotesk (same as rafaelcespedes.com). Used on the
-            mobile gate message. */}
-        <link rel="preconnect" href="https://use.typekit.net" crossOrigin="" />
-        <link rel="stylesheet" href="https://use.typekit.net/cds2lxc.css" />
-      </head>
+    <html lang="en" className={`${headline.variable} ${body.variable} ${inter.variable}`}>
       <body className="font-sans">{children}</body>
       <GoogleAnalytics />
     </html>
